@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SY-Jia06 的技术博客 - Java后端 & AI Agent 开发学习之路">
+    <title>SY-Jia06's Tech Blog</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#" class="nav-logo" data-page="home">
+                <span class="logo-bracket">{</span> J <span class="logo-bracket">}</span>
+            </a>
+            <div class="nav-links">
+                <a href="#" data-page="home" class="nav-link active">首页</a>
+                <a href="#" data-page="blog" class="nav-link">博客</a>
+                <a href="#" data-page="projects" class="nav-link">项目</a>
+                <a href="#" data-page="about" class="nav-link">关于</a>
+                <a href="https://github.com/SY-Jia06" target="_blank" class="nav-link nav-github">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                    </svg>
+                </a>
+            </div>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#" data-page="home" class="mobile-link">首页</a>
+        <a href="#" data-page="blog" class="mobile-link">博客</a>
+        <a href="#" data-page="projects" class="mobile-link">项目</a>
+        <a href="#" data-page="about" class="mobile-link">关于</a>
+    </div>
+
+    <!-- Main Content -->
+    <main id="app">
+        <!-- HOME PAGE -->
+        <section class="page page-home active" id="page-home">
+            <!-- Hero -->
+            <div class="hero">
+                <div class="hero-bg">
+                    <div class="gradient-orb orb-1"></div>
+                    <div class="gradient-orb orb-2"></div>
+                    <div class="gradient-orb orb-3"></div>
+                </div>
+                <div class="hero-content">
+                    <div class="hero-badge">🚀 Open to Opportunities</div>
+                    <h1 class="hero-title">
+                        <span class="hero-greeting">你好，我是</span>
+                        <span class="hero-name">J</span>
+                    </h1>
+                    <p class="hero-subtitle">
+                        <span class="typing-text" id="typingText"></span>
+                        <span class="cursor">|</span>
+                    </p>
+                    <p class="hero-desc">
+                        吉林大学唐敖庆班 · Java后端 & AI Agent 开发
+                    </p>
+                    <div class="hero-actions">
+                        <a href="#" data-page="blog" class="btn btn-primary">
+                            📝 阅读博客
+                        </a>
+                        <a href="#" data-page="about" class="btn btn-outline">
+                            了解更多 →
+                        </a>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="stat">
+                            <span class="stat-number" data-target="0">0</span>
+                            <span class="stat-label">篇博客</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number" data-target="0">0</span>
+                            <span class="stat-label">个项目</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number" data-target="2026">0</span>
+                            <span class="stat-label">届毕业生</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tech Stack -->
+            <div class="section" id="tech-stack">
+                <h2 class="section-title">技术栈</h2>
+                <div class="tech-grid">
+                    <div class="tech-card" data-category="backend">
+                        <div class="tech-icon">☕</div>
+                        <h3>Java</h3>
+                        <p>Spring Boot · 微服务 · JUC并发</p>
+                    </div>
+                    <div class="tech-card" data-category="ai">
+                        <div class="tech-icon">🐍</div>
+                        <h3>Python</h3>
+                        <p>FastAPI · PyTorch · LangChain</p>
+                    </div>
+                    <div class="tech-card" data-category="data">
+                        <div class="tech-icon">🗄️</div>
+                        <h3>数据库</h3>
+                        <p>MySQL · Redis · 向量数据库</p>
+                    </div>
+                    <div class="tech-card" data-category="ai">
+                        <div class="tech-icon">🤖</div>
+                        <h3>AI / Agent</h3>
+                        <p>RAG · Multi-Agent · Prompt Engineering</p>
+                    </div>
+                    <div class="tech-card" data-category="infra">
+                        <div class="tech-icon">🐳</div>
+                        <h3>基础设施</h3>
+                        <p>Docker · Git · Linux · CI/CD</p>
+                    </div>
+                    <div class="tech-card" data-category="frontend">
+                        <div class="tech-icon">🌐</div>
+                        <h3>前端 & 可视化</h3>
+                        <p>HTML/CSS/JS · Plotly · Tableau</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Posts Preview -->
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">最新文章</h2>
+                    <a href="#" data-page="blog" class="section-link">查看全部 →</a>
+                </div>
+                <div class="posts-grid" id="recentPosts">
+                    <!-- Dynamically loaded -->
+                </div>
+            </div>
+        </section>
+
+        <!-- BLOG PAGE -->
+        <section class="page page-blog" id="page-blog">
+            <div class="page-header">
+                <h1>✍️ 技术博客</h1>
+                <p>学习笔记 · 八股整理 · 技术思考</p>
+            </div>
+            <!-- Tag Filter -->
+            <div class="tag-filter" id="tagFilter">
+                <button class="tag-btn active" data-tag="all">全部</button>
+            </div>
+            <!-- Blog List -->
+            <div class="blog-list" id="blogList">
+                <!-- Dynamically loaded -->
+            </div>
+            <!-- Single Post View -->
+            <div class="post-view" id="postView" style="display:none;">
+                <button class="back-btn" id="backBtn">← 返回文章列表</button>
+                <article class="post-content" id="postContent">
+                    <!-- Markdown rendered here -->
+                </article>
+            </div>
+        </section>
+
+        <!-- PROJECTS PAGE -->
+        <section class="page page-projects" id="page-projects">
+            <div class="page-header">
+                <h1>🛠️ 项目</h1>
+                <p>我参与和构建的项目</p>
+            </div>
+            <div class="projects-grid" id="projectsGrid">
+                <div class="project-card featured">
+                    <div class="project-badge">⭐ 核心项目</div>
+                    <h3>笔记/内容发布平台</h3>
+                    <p>微服务架构的内容发布系统，包含网关、笔记中台、审核服务、音视频策略等模块，使用 Spring Boot + RocketMQ 实现异步解耦。</p>
+                    <div class="project-tech">
+                        <span class="tech-tag">Spring Boot</span>
+                        <span class="tech-tag">微服务</span>
+                        <span class="tech-tag">RocketMQ</span>
+                        <span class="tech-tag">MySQL</span>
+                        <span class="tech-tag">Redis</span>
+                    </div>
+                    <div class="project-links">
+                        <a href="#" class="project-link">GitHub →</a>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <h3>SuperBizAgent</h3>
+                    <p>基于大模型的智能业务代理系统，融合 AI Agent 架构与企业级后端设计。</p>
+                    <div class="project-tech">
+                        <span class="tech-tag">Java</span>
+                        <span class="tech-tag">AI Agent</span>
+                        <span class="tech-tag">LLM</span>
+                    </div>
+                    <div class="project-links">
+                        <a href="#" class="project-link">GitHub →</a>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <h3>更多项目开发中...</h3>
+                    <p>持续学习和构建中，敬请期待 🚧</p>
+                    <div class="project-tech">
+                        <span class="tech-tag">Coming Soon</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ABOUT PAGE -->
+        <section class="page page-about" id="page-about">
+            <div class="page-header">
+                <h1>👋 关于我</h1>
+            </div>
+            <div class="about-content">
+                <div class="about-card">
+                    <div class="about-avatar">
+                        <div class="avatar-placeholder">J</div>
+                    </div>
+                    <div class="about-info">
+                        <h2>Hey, I'm J 👋</h2>
+                        <div class="about-tags">
+                            <span class="about-tag">🎓 吉林大学 · 唐敖庆班</span>
+                            <span class="about-tag">☕ Java后端开发</span>
+                            <span class="about-tag">🤖 AI Agent开发</span>
+                            <span class="about-tag">🇸🇬 即将赴新加坡</span>
+                        </div>
+                        <div class="about-text">
+                            <p>
+                                我是一名即将毕业的计算机科学学生，目前专注于 <strong>Java 后端开发</strong>和 <strong>AI Agent 系统</strong>。
+                            </p>
+                            <p>
+                                我相信最好的学习方式是<strong>输出</strong>——把学到的东西用自己的话讲清楚。这个博客就是我的学习实验室，记录我从 Java
+                                基础到分布式系统、从机器学习到大模型应用的成长轨迹。
+                            </p>
+                            <p>
+                                即将前往新加坡攻读硕士，期待在更大的舞台上探索技术的无限可能。
+                            </p>
+                        </div>
+                        <div class="about-timeline">
+                            <h3>📍 Timeline</h3>
+                            <div class="timeline">
+                                <div class="timeline-item">
+                                    <div class="timeline-dot"></div>
+                                    <div class="timeline-content">
+                                        <span class="timeline-date">2026</span>
+                                        <p>🇸🇬 赴新加坡攻读硕士</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-dot active"></div>
+                                    <div class="timeline-content">
+                                        <span class="timeline-date">现在</span>
+                                        <p>☕ Java 后端速通 + 🤖 AI Agent 学习</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-dot"></div>
+                                    <div class="timeline-content">
+                                        <span class="timeline-date">2022</span>
+                                        <p>🎓 进入吉林大学唐敖庆班</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="about-contact">
+                            <h3>📬 联系方式</h3>
+                            <div class="contact-links">
+                                <a href="https://github.com/SY-Jia06" target="_blank" class="contact-link">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                        <path
+                                            d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                                    </svg>
+                                    GitHub
+                                </a>
+                                <a href="mailto:your@email.com" class="contact-link">
+                                    ✉️ Email
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>Built with ❤️ & curiosity · © 2026 SY-Jia06</p>
+            <p class="footer-quote">"我听见了，我忘记了；我看见了，我记住了；我做了，我理解了。"</p>
+        </div>
+    </footer>
+
+    <script src="posts.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
