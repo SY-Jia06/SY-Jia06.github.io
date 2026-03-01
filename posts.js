@@ -5,20 +5,20 @@
 
 const POSTS = [
     {
-        id: "java-collections",
-        title: "Java 集合框架全景图：List、Map、Set 一网打尽",
-        date: "2026-02-27",
-        tags: ["Java SE", "集合框架"],
-        summary: "从 ArrayList 到 HashMap，理解 Java 集合框架的设计哲学和底层实现。面试必问：HashMap 扩容机制、ConcurrentHashMap 分段锁。",
-        file: "posts/java-collections.md"
+        id: "os-concepts",
+        title: "操作系统的概念、功能与目标",
+        date: "2026-03-01",
+        tags: ["操作系统", "OS"],
+        summary: "操作系统位于用户与硬件之间，管理硬件+软件资源，向上提供方便易用的接口（GUI、命令接口、程序接口）。",
+        file: "posts/OS/OS-1.md"
     },
     {
-        id: "mysql-index",
-        title: "MySQL 索引原理：为什么是 B+ 树而不是 B 树？",
-        date: "2026-02-28",
-        tags: ["MySQL", "数据库"],
-        summary: "从磁盘 I/O 的角度理解 B+ 树索引的设计，聊聊聚簇索引和非聚簇索引的区别，以及如何写出利用索引的 SQL。",
-        file: "posts/mysql-index.md"
+        id: "os-features",
+        title: "操作系统四大特征：并发、共享、虚拟、异步",
+        date: "2026-03-01",
+        tags: ["操作系统", "OS"],
+        summary: "并发与并行的区别、互斥共享与同时共享、时分复用与空分复用、异步的走走停停。并发是最基本的特征。",
+        file: "posts/OS/OS-2.md"
     }
 ];
 
