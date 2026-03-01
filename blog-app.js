@@ -1,35 +1,20 @@
 // ============================================
-// Main Application Logic
+// Blog Page Application Logic
 // ============================================
 
 document.addEventListener('DOMContentLoaded', () => {
-    initNavigation();
-    initTypingEffect();
-    initBlog(); // must run before initCountAnimation to set correct targets
-    initCountAnimation();
+    initMobileNav();
+    initBlog();
     initScrollEffects();
 });
 
 // ============================================
-// Navigation
+// Mobile Navigation
 // ============================================
-function initNavigation() {
-    const navLinks = document.querySelectorAll('[data-page]');
+function initMobileNav() {
     const navToggle = document.getElementById('navToggle');
     const mobileMenu = document.getElementById('mobileMenu');
 
-    navLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const page = link.dataset.page;
-            navigateTo(page);
-            // Close mobile menu
-            mobileMenu.classList.remove('open');
-            navToggle.classList.remove('active');
-        });
-    });
-
-    // Mobile toggle
     if (navToggle) {
         navToggle.addEventListener('click', () => {
             mobileMenu.classList.toggle('open');
@@ -38,119 +23,18 @@ function initNavigation() {
     }
 }
 
-function navigateTo(pageId) {
-    // Hide all pages
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    // Show target page
-    const targetPage = document.getElementById(`page-${pageId}`);
-    if (targetPage) {
-        targetPage.classList.add('active');
-    }
-    // Update nav links
-    document.querySelectorAll('.nav-link[data-page]').forEach(link => {
-        link.classList.toggle('active', link.dataset.page === pageId);
-    });
-    // Scroll to top
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-// ============================================
-// Typing Effect
-// ============================================
-function initTypingEffect() {
-    const texts = [
-        'Java 后端开发者',
-        'AI Agent 探索者',
-        '终身学习者',
-        'System.out.println("Hello World!");',
-        '把学到的东西写下来 ✍️'
-    ];
-    const element = document.getElementById('typingText');
-    if (!element) return;
-
-    let textIndex = 0;
-    let charIndex = 0;
-    let isDeleting = false;
-
-    function type() {
-        const current = texts[textIndex];
-
-        if (isDeleting) {
-            element.textContent = current.substring(0, charIndex - 1);
-            charIndex--;
-        } else {
-            element.textContent = current.substring(0, charIndex + 1);
-            charIndex++;
-        }
-
-        let delay = isDeleting ? 40 : 80;
-
-        if (!isDeleting && charIndex === current.length) {
-            delay = 2000; // Pause at end
-            isDeleting = true;
-        } else if (isDeleting && charIndex === 0) {
-            isDeleting = false;
-            textIndex = (textIndex + 1) % texts.length;
-            delay = 500;
-        }
-
-        setTimeout(type, delay);
-    }
-
-    type();
-}
-
-// ============================================
-// Count Animation
-// ============================================
-function initCountAnimation() {
-    const counters = document.querySelectorAll('.stat-number');
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const target = parseInt(entry.target.dataset.target);
-                animateCount(entry.target, target);
-                observer.unobserve(entry.target);
-            }
-        });
-    });
-
-    counters.forEach(counter => observer.observe(counter));
-}
-
-function animateCount(element, target) {
-    const duration = 1500;
-    const start = performance.now();
-
-    function update(now) {
-        const elapsed = now - start;
-        const progress = Math.min(elapsed / duration, 1);
-        // Ease out cubic
-        const eased = 1 - Math.pow(1 - progress, 3);
-        element.textContent = Math.round(eased * target);
-
-        if (progress < 1) {
-            requestAnimationFrame(update);
-        }
-    }
-
-    requestAnimationFrame(update);
-}
-
 // ============================================
 // Blog
 // ============================================
 function initBlog() {
-    updateStats();
-    renderRecentPosts();
-}
+    renderTagFilter();
+    renderBlogList();
+    initBackButton();
 
-function updateStats() {
-    // Update blog count on hero
-    const blogCountEl = document.querySelector('.stat-number[data-target]');
-    if (blogCountEl && POSTS) {
-        const statNumbers = document.querySelectorAll('.stat-number');
-        if (statNumbers[0]) statNumbers[0].dataset.target = POSTS.length;
+    // Check URL hash for direct post link
+    const hash = window.location.hash.slice(1);
+    if (hash) {
+        openPost(hash);
     }
 }
 
@@ -159,6 +43,16 @@ function renderTagFilter() {
     if (!container) return;
 
     const tags = getAllTags();
+
+    // "全部" button
+    const allBtn = document.createElement('button');
+    allBtn.className = 'tag-btn active';
+    allBtn.dataset.tag = 'all';
+    allBtn.textContent = '全部';
+    allBtn.addEventListener('click', () => filterByTag('all', allBtn));
+    container.appendChild(allBtn);
+
+    // Individual tag buttons
     tags.forEach(tag => {
         const btn = document.createElement('button');
         btn.className = 'tag-btn';
@@ -218,38 +112,6 @@ function renderBlogList() {
     `).join('');
 }
 
-function renderRecentPosts() {
-    const container = document.getElementById('recentPosts');
-    if (!container || !POSTS) return;
-
-    const recent = [...POSTS]
-        .sort((a, b) => new Date(b.date) - new Date(a.date))
-        .slice(0, 3);
-
-    if (recent.length === 0) {
-        container.innerHTML = `
-            <div class="empty-state">
-                <div class="emoji">📝</div>
-                <p>开始写博客吧，你的文章会显示在这里</p>
-            </div>
-        `;
-        return;
-    }
-
-    container.innerHTML = recent.map(post => `
-        <a href="blog.html#${post.id}" class="blog-card" style="text-decoration:none; color:inherit;">
-            <div class="blog-card-header">
-                <span class="blog-date">${formatDate(post.date)}</span>
-                <div class="blog-tags">
-                    ${post.tags.map(tag => `<span class="blog-tag">${tag}</span>`).join('')}
-                </div>
-            </div>
-            <h3>${post.title}</h3>
-            <p>${post.summary}</p>
-        </a>
-    `).join('');
-}
-
 async function openPost(postId) {
     const post = POSTS.find(p => p.id === postId);
     if (!post) return;
@@ -258,11 +120,16 @@ async function openPost(postId) {
     const tagFilter = document.getElementById('tagFilter');
     const postView = document.getElementById('postView');
     const postContent = document.getElementById('postContent');
+    const pageHeader = document.querySelector('.page-header');
 
     // Hide list, show post
     blogList.style.display = 'none';
     tagFilter.style.display = 'none';
+    if (pageHeader) pageHeader.style.display = 'none';
     postView.style.display = 'block';
+
+    // Update URL hash
+    window.location.hash = postId;
 
     // Load markdown
     try {
@@ -291,10 +158,15 @@ function initBackButton() {
         const blogList = document.getElementById('blogList');
         const tagFilter = document.getElementById('tagFilter');
         const postView = document.getElementById('postView');
+        const pageHeader = document.querySelector('.page-header');
 
         postView.style.display = 'none';
         blogList.style.display = '';
         tagFilter.style.display = '';
+        if (pageHeader) pageHeader.style.display = '';
+
+        // Clear hash
+        history.pushState('', document.title, window.location.pathname);
     });
 }
 
@@ -312,7 +184,7 @@ function initScrollEffects() {
         }
     });
 
-    // Intersection Observer for fade-in animations
+    // Intersection Observer for fade-in
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -322,7 +194,7 @@ function initScrollEffects() {
         });
     }, { threshold: 0.1 });
 
-    document.querySelectorAll('.tech-card, .project-card, .blog-card').forEach(el => {
+    document.querySelectorAll('.blog-card').forEach(el => {
         el.style.opacity = '0';
         el.style.transform = 'translateY(20px)';
         el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
