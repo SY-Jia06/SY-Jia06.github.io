@@ -1,343 +1,175 @@
-// ============================================
-// Main Application Logic
-// ============================================
+document.body.classList.add("loading");
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
     initNavigation();
-    initTypingEffect();
-    initBlog(); // must run before initCountAnimation to set correct targets
-    initCountAnimation();
     initScrollEffects();
+    renderHomePage();
+    restorePageFromHash();
+    finishSiteLoading();
 });
 
-// ============================================
-// Navigation
-// ============================================
 function initNavigation() {
-    const navLinks = document.querySelectorAll('[data-page]');
-    const navToggle = document.getElementById('navToggle');
-    const mobileMenu = document.getElementById('mobileMenu');
+    const navLinks = document.querySelectorAll("[data-page]");
+    const navToggle = document.getElementById("navToggle");
+    const mobileMenu = document.getElementById("mobileMenu");
 
-    navLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const page = link.dataset.page;
-            navigateTo(page);
-            // Close mobile menu
-            mobileMenu.classList.remove('open');
-            navToggle.classList.remove('active');
+    navLinks.forEach((link) => {
+        link.addEventListener("click", (event) => {
+            event.preventDefault();
+            navigateTo(link.dataset.page);
+            mobileMenu.classList.remove("open");
         });
     });
 
-    // Mobile toggle
     if (navToggle) {
-        navToggle.addEventListener('click', () => {
-            mobileMenu.classList.toggle('open');
-            navToggle.classList.toggle('active');
+        navToggle.addEventListener("click", () => {
+            mobileMenu.classList.toggle("open");
         });
     }
 }
 
 function navigateTo(pageId) {
-    // Hide all pages
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    // Show target page
-    const targetPage = document.getElementById(`page-${pageId}`);
-    if (targetPage) {
-        targetPage.classList.add('active');
-    }
-    // Update nav links
-    document.querySelectorAll('.nav-link[data-page]').forEach(link => {
-        link.classList.toggle('active', link.dataset.page === pageId);
-    });
-    // Scroll to top
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-// ============================================
-// Typing Effect
-// ============================================
-function initTypingEffect() {
-    const texts = [
-        'Java 后端开发者',
-        'AI Agent 探索者',
-        '终身学习者',
-        'System.out.println("Hello World!");',
-        '把学到的东西写下来 ✍️'
-    ];
-    const element = document.getElementById('typingText');
-    if (!element) return;
-
-    let textIndex = 0;
-    let charIndex = 0;
-    let isDeleting = false;
-
-    function type() {
-        const current = texts[textIndex];
-
-        if (isDeleting) {
-            element.textContent = current.substring(0, charIndex - 1);
-            charIndex--;
-        } else {
-            element.textContent = current.substring(0, charIndex + 1);
-            charIndex++;
-        }
-
-        let delay = isDeleting ? 40 : 80;
-
-        if (!isDeleting && charIndex === current.length) {
-            delay = 2000; // Pause at end
-            isDeleting = true;
-        } else if (isDeleting && charIndex === 0) {
-            isDeleting = false;
-            textIndex = (textIndex + 1) % texts.length;
-            delay = 500;
-        }
-
-        setTimeout(type, delay);
-    }
-
-    type();
-}
-
-// ============================================
-// Count Animation
-// ============================================
-function initCountAnimation() {
-    const counters = document.querySelectorAll('.stat-number');
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const target = parseInt(entry.target.dataset.target);
-                animateCount(entry.target, target);
-                observer.unobserve(entry.target);
-            }
-        });
+    document.querySelectorAll(".page").forEach((page) => {
+        page.classList.toggle("active", page.id === `page-${pageId}`);
     });
 
-    counters.forEach(counter => observer.observe(counter));
+    document.querySelectorAll(".nav-link[data-page]").forEach((link) => {
+        link.classList.toggle("active", link.dataset.page === pageId);
+    });
+
+    history.replaceState("", document.title, `${window.location.pathname}${pageId === "projects" ? "#page-projects" : ""}`);
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-function animateCount(element, target) {
-    const duration = 1500;
-    const start = performance.now();
-
-    function update(now) {
-        const elapsed = now - start;
-        const progress = Math.min(elapsed / duration, 1);
-        // Ease out cubic
-        const eased = 1 - Math.pow(1 - progress, 3);
-        element.textContent = Math.round(eased * target);
-
-        if (progress < 1) {
-            requestAnimationFrame(update);
-        }
+function restorePageFromHash() {
+    const hash = window.location.hash.replace("#page-", "");
+    if (["home", "projects"].includes(hash)) {
+        navigateTo(hash);
     }
-
-    requestAnimationFrame(update);
 }
 
-// ============================================
-// Blog
-// ============================================
-function initBlog() {
-    updateStats();
+function initScrollEffects() {
+    const navbar = document.getElementById("navbar");
+    window.addEventListener("scroll", () => {
+        navbar.classList.toggle("scrolled", window.scrollY > 20);
+    });
+}
+
+function renderHomePage() {
     renderRecentPosts();
-}
-
-function updateStats() {
-    // Update blog count on hero
-    const blogCountEl = document.querySelector('.stat-number[data-target]');
-    if (blogCountEl && POSTS) {
-        const statNumbers = document.querySelectorAll('.stat-number');
-        if (statNumbers[0]) statNumbers[0].dataset.target = POSTS.length;
-    }
-}
-
-function renderTagFilter() {
-    const container = document.getElementById('tagFilter');
-    if (!container) return;
-
-    const tags = getAllTags();
-    tags.forEach(tag => {
-        const btn = document.createElement('button');
-        btn.className = 'tag-btn';
-        btn.dataset.tag = tag;
-        btn.textContent = tag;
-        btn.addEventListener('click', () => filterByTag(tag, btn));
-        container.appendChild(btn);
-    });
-}
-
-function filterByTag(tag, activeBtn) {
-    // Update active button
-    document.querySelectorAll('.tag-btn').forEach(btn => btn.classList.remove('active'));
-    activeBtn.classList.add('active');
-
-    // Filter posts
-    const cards = document.querySelectorAll('.blog-card');
-    cards.forEach(card => {
-        if (tag === 'all') {
-            card.style.display = '';
-        } else {
-            const cardTags = card.dataset.tags.split(',');
-            card.style.display = cardTags.includes(tag) ? '' : 'none';
-        }
-    });
-}
-
-function renderBlogList() {
-    const container = document.getElementById('blogList');
-    if (!container || !POSTS) return;
-
-    if (POSTS.length === 0) {
-        container.innerHTML = `
-            <div class="empty-state">
-                <div class="emoji">✍️</div>
-                <p>还没有文章，快去写第一篇吧！</p>
-            </div>
-        `;
-        return;
-    }
-
-    // Sort by date descending
-    const sorted = [...POSTS].sort((a, b) => new Date(b.date) - new Date(a.date));
-
-    container.innerHTML = sorted.map(post => `
-        <div class="blog-card" data-id="${post.id}" data-tags="${post.tags.join(',')}" onclick="openPost('${post.id}')">
-            <div class="blog-card-header">
-                <span class="blog-date">${formatDate(post.date)}</span>
-                <div class="blog-tags">
-                    ${post.tags.map(tag => `<span class="blog-tag">${tag}</span>`).join('')}
-                </div>
-            </div>
-            <h3>${post.title}</h3>
-            <p>${post.summary}</p>
-            <span class="blog-read-more">阅读全文 →</span>
-        </div>
-    `).join('');
+    renderHomeCategories();
+    renderHomeArchives();
+    renderHomeTags();
+    renderHomeStats();
 }
 
 function renderRecentPosts() {
-    const container = document.getElementById('recentPosts');
-    if (!container || !POSTS) return;
+    const container = document.getElementById("recentPosts");
+    if (!container) return;
 
-    const recent = [...POSTS]
-        .sort((a, b) => new Date(b.date) - new Date(a.date))
-        .slice(0, 3);
+    const posts = sortPostsByDate().slice(0, 3);
+    container.innerHTML = posts.map((post) => buildPostCard(post, true)).join("");
+}
 
-    if (recent.length === 0) {
-        container.innerHTML = `
-            <div class="empty-state">
-                <div class="emoji">📝</div>
-                <p>开始写博客吧，你的文章会显示在这里</p>
+function renderHomeCategories() {
+    const container = document.getElementById("homeCategoryList");
+    if (!container) return;
+
+    container.innerHTML = getCategoryCounts()
+        .map((item) => `<a class="taxonomy-item-link" href="${buildFilterUrl({ category: item.name })}"><span>${item.name}</span><span>${item.count}</span></a>`)
+        .join("");
+}
+
+function renderHomeArchives() {
+    const container = document.getElementById("homeArchiveList");
+    if (!container) return;
+
+    container.innerHTML = getArchiveCounts()
+        .map((item) => `<a class="taxonomy-item-link" href="${buildFilterUrl({ archive: item.month })}"><span>${formatArchive(item.month)}</span><span>${item.count}</span></a>`)
+        .join("");
+}
+
+function renderHomeTags() {
+    const container = document.getElementById("homeTagCloud");
+    if (!container) return;
+
+    container.innerHTML = getAllTags()
+        .map((tag) => `<a class="post-tag tag-cloud-link" href="${buildFilterUrl({ tag })}">${tag}</a>`)
+        .join("");
+}
+
+function renderHomeStats() {
+    const container = document.getElementById("homeSiteStats");
+    if (!container) return;
+
+    const stats = getSiteStats();
+    container.innerHTML = [
+        `${stats.postCount} 篇文章`,
+        `${stats.categoryCount} 个分类`,
+        `${stats.tagCount} 个标签`,
+        stats.latestDate ? `更新于 ${formatDate(stats.latestDate)}` : ""
+    ]
+        .filter(Boolean)
+        .map((item) => `<span>${item}</span>`)
+        .join("");
+}
+
+function buildPostCard(post, linkToPage = false) {
+    const card = `
+        <article class="post-card">
+            <div class="post-card-cover tone-${post.coverTone || "teal"}">
+                <span>${post.coverLabel || "POST"}</span>
+                <span>${post.date.slice(5).replace("-", ".")}</span>
             </div>
-        `;
-        return;
-    }
-
-    container.innerHTML = recent.map(post => `
-        <a href="blog.html#${post.id}" class="blog-card" style="text-decoration:none; color:inherit;">
-            <div class="blog-card-header">
-                <span class="blog-date">${formatDate(post.date)}</span>
-                <div class="blog-tags">
-                    ${post.tags.map(tag => `<span class="blog-tag">${tag}</span>`).join('')}
+            <div class="post-card-body">
+                <div class="post-card-meta">
+                    <span>${formatDate(post.date)}</span>
+                    <a class="post-card-category is-link" href="${buildFilterUrl({ category: post.category })}">${post.category}</a>
                 </div>
+                <h3 class="post-card-title">${post.title}</h3>
+                <p class="post-card-summary">${post.summary}</p>
+                <div class="post-card-tags">${post.tags.map((tag) => `<a class="post-tag" href="${buildFilterUrl({ tag })}">${tag}</a>`).join("")}</div>
             </div>
-            <h3>${post.title}</h3>
-            <p>${post.summary}</p>
-        </a>
-    `).join('');
-}
+        </article>
+    `;
 
-async function openPost(postId) {
-    const post = POSTS.find(p => p.id === postId);
-    if (!post) return;
-
-    const blogList = document.getElementById('blogList');
-    const tagFilter = document.getElementById('tagFilter');
-    const postView = document.getElementById('postView');
-    const postContent = document.getElementById('postContent');
-
-    // Hide list, show post
-    blogList.style.display = 'none';
-    tagFilter.style.display = 'none';
-    postView.style.display = 'block';
-
-    // Load markdown
-    try {
-        const response = await fetch(post.file);
-        if (!response.ok) throw new Error('Post not found');
-        const markdown = await response.text();
-        postContent.innerHTML = marked.parse(markdown);
-    } catch (err) {
-        postContent.innerHTML = `
-            <h1>${post.title}</h1>
-            <p style="color: var(--text-muted); margin-top: var(--space-lg);">
-                📄 文章文件 <code>${post.file}</code> 还未创建。<br><br>
-                创建这个 Markdown 文件，写上你的学习笔记，刷新页面就能看到了！
-            </p>
-        `;
+    if (linkToPage) {
+        return `<a class="post-card-link" href="blog.html#${post.id}">${card}</a>`;
     }
 
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return card;
 }
 
-function initBackButton() {
-    const backBtn = document.getElementById('backBtn');
-    if (!backBtn) return;
-
-    backBtn.addEventListener('click', () => {
-        const blogList = document.getElementById('blogList');
-        const tagFilter = document.getElementById('tagFilter');
-        const postView = document.getElementById('postView');
-
-        postView.style.display = 'none';
-        blogList.style.display = '';
-        tagFilter.style.display = '';
+function formatDate(dateStr) {
+    return new Date(dateStr).toLocaleDateString("zh-CN", {
+        year: "numeric",
+        month: "long",
+        day: "numeric"
     });
 }
 
-// ============================================
-// Scroll Effects
-// ============================================
-function initScrollEffects() {
-    const navbar = document.getElementById('navbar');
+function formatArchive(value) {
+    const [year, month] = value.split("-");
+    return `${year} 年 ${Number(month)} 月`;
+}
 
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 50) {
-            navbar.classList.add('scrolled');
-        } else {
-            navbar.classList.remove('scrolled');
+function buildFilterUrl(filters) {
+    const params = new URLSearchParams();
+    Object.entries(filters).forEach(([key, value]) => {
+        if (value) {
+            params.set(key, value);
         }
     });
-
-    // Intersection Observer for fade-in animations
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-            }
-        });
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll('.tech-card, .project-card, .blog-card').forEach(el => {
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(20px)';
-        el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-        observer.observe(el);
-    });
+    return `blog.html?${params.toString()}`;
 }
 
-// ============================================
-// Utilities
-// ============================================
-function formatDate(dateStr) {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString('zh-CN', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
+function finishSiteLoading() {
+    const loader = document.getElementById("siteLoader");
+    if (!loader) return;
+
+    window.setTimeout(() => {
+        loader.classList.add("is-hidden");
+        document.body.classList.remove("loading");
+    }, 420);
 }
