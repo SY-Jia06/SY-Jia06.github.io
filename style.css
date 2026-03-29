@@ -1340,6 +1340,26 @@ a.about-contact-item:hover .contact-text {
     margin-bottom: 24px;
 }
 
+.reading-progress {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    height: 4px;
+    margin-bottom: 14px;
+    border-radius: 999px;
+    overflow: hidden;
+    background: rgba(13, 114, 132, 0.08);
+}
+
+.reading-progress-bar {
+    display: block;
+    width: 100%;
+    height: 100%;
+    transform: scaleX(0);
+    transform-origin: left center;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+}
+
 .back-btn {
     margin-bottom: 18px;
     padding: 10px 16px;
@@ -1448,6 +1468,46 @@ a.about-contact-item:hover .contact-text {
     color: var(--text-body);
 }
 
+.post-toc {
+    margin-bottom: 28px;
+    padding: 18px 20px;
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius-lg);
+    background: var(--bg-soft);
+}
+
+.post-toc-label {
+    margin-bottom: 12px;
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+
+.post-toc-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.post-toc-link {
+    color: var(--text-body);
+    text-decoration: none;
+    line-height: 1.45;
+}
+
+.post-toc-link.level-3 {
+    padding-left: 16px;
+    font-size: 0.96rem;
+    color: var(--text-muted);
+}
+
+.post-toc-link.active {
+    color: var(--accent);
+    font-weight: 600;
+}
+
 .post-content > :first-child {
     margin-top: 0;
 }
@@ -1528,6 +1588,37 @@ a.about-contact-item:hover .contact-text {
     padding-left: 1.4rem;
 }
 
+.post-pagination {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 34px;
+}
+
+.post-pagination-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+    padding: 18px 20px;
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius-lg);
+    background: var(--bg-soft);
+    color: var(--text-strong);
+    text-align: left;
+    cursor: pointer;
+}
+
+.post-pagination-card.is-next {
+    justify-self: end;
+}
+
+.post-pagination-label {
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    letter-spacing: 0.08em;
+}
+
 .post-empty,
 .empty-state {
     padding: 36px 24px;
@@ -1551,6 +1642,16 @@ a.about-contact-item:hover .contact-text {
 
 .footer-content p {
     margin: 6px 0;
+}
+
+@media (max-width: 780px) {
+    .post-pagination {
+        grid-template-columns: 1fr;
+    }
+
+    .post-pagination-card.is-next {
+        justify-self: stretch;
+    }
 }
 
 @media (max-width: 980px) {

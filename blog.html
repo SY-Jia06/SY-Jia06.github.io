@@ -89,6 +89,9 @@
                     <div class="blog-list" id="blogList"></div>
 
                     <div class="post-view" id="postView" style="display:none;">
+                        <div class="reading-progress" id="readingProgress" hidden>
+                            <span class="reading-progress-bar" id="readingProgressBar"></span>
+                        </div>
                         <button class="back-btn" id="backBtn">返回博客列表</button>
                         <section class="post-hero" id="postHero">
                             <div class="post-hero-overlay"></div>
@@ -98,7 +101,9 @@
                             </div>
                         </section>
                         <article class="post-shell post-shell-reading">
+                            <aside class="post-toc" id="postToc" hidden></aside>
                             <article class="post-content" id="postContent"></article>
+                            <nav class="post-pagination" id="postPagination" hidden></nav>
                         </article>
                         <section class="post-comments-shell" id="postComments" hidden>
                             <div class="section-heading section-heading-compact">
@@ -121,6 +126,7 @@
 
     <script src="shared.js?v=20260328b"></script>
     <script src="posts.js?v=20260328b"></script>
+    <script src="reading-enhancements.js?v=20260329a"></script>
     <script src="blog-app.js?v=20260329a"></script>
 </body>
 

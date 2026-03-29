@@ -291,6 +291,7 @@ async function openPostInternal(postId, { skipHistory = false } = {}) {
     const post = POSTS.find((item) => item.id === postId);
     if (!post) return;
     activePostId = post.id;
+    window.ReadingEnhancements?.unmount();
 
     const listPanel = document.getElementById("listPanel");
     const blogList = document.getElementById("blogList");
@@ -347,6 +348,11 @@ async function openPostInternal(postId, { skipHistory = false } = {}) {
 
         const readingMarkdown = removeLeadingImage(removeLeadingTitle(cleanMarkdown, post.title));
         postContent.innerHTML = marked.parse(readingMarkdown, { renderer });
+        window.ReadingEnhancements?.mount({
+            post,
+            posts: sortPostsByDate(),
+            contentElement: postContent
+        });
     } catch (error) {
         postHero.style.backgroundImage = "";
         postContent.innerHTML = `
@@ -414,6 +420,7 @@ function closePostView({ skipHistory = false, restoreScrollY = 0 } = {}) {
     document.getElementById("quickBrowser").style.display = "";
     document.getElementById("blogPageLayout").classList.remove("reading-mode");
     document.getElementById("postView").style.display = "none";
+    window.ReadingEnhancements?.unmount();
     activePostId = "";
     clearComments();
 
