@@ -72,6 +72,23 @@ function renderRecentPosts() {
 
     const posts = sortPostsByDate().slice(0, 3);
     container.innerHTML = posts.map((post) => buildPostCard(post, true)).join("");
+
+    container.querySelectorAll("[data-post-url]").forEach((card) => {
+        const openCard = () => {
+            window.location.href = card.dataset.postUrl;
+        };
+
+        card.addEventListener("click", (event) => {
+            if (event.target.closest("a")) return;
+            openCard();
+        });
+
+        card.addEventListener("keydown", (event) => {
+            if (event.key !== "Enter" && event.key !== " ") return;
+            event.preventDefault();
+            openCard();
+        });
+    });
 }
 
 function renderHomeCategories() {
@@ -141,7 +158,11 @@ function buildPostCard(post, linkToPage = false) {
     `;
 
     if (linkToPage) {
-        return `<a class="post-card-link" href="${buildPostUrl(post.id)}">${card}</a>`;
+        return `
+            <article class="post-card-link post-card-link-home" data-post-url="${buildPostUrl(post.id)}" tabindex="0" role="link" aria-label="打开文章：${post.title}">
+                ${card}
+            </article>
+        `;
     }
 
     return card;
