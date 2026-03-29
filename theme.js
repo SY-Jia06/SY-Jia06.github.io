@@ -19,6 +19,9 @@
         document.documentElement.dataset.themeMode = mode;
         document.documentElement.dataset.theme = resolved;
         syncThemeControls(mode);
+        window.dispatchEvent(new CustomEvent("blog-theme-change", {
+            detail: { mode, theme: resolved }
+        }));
     }
 
     function syncThemeControls(mode) {

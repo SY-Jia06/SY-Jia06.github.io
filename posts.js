@@ -3,6 +3,23 @@
 
 const POSTS = [
     {
+        "id": "essay-spectacle-society",
+        "title": "景观社会：当我们用「看」替代「活」",
+        "date": "2026-03-28",
+        "category": "随笔",
+        "tags": [
+            "阅读",
+            "社会观察",
+            "景观社会",
+            "随笔"
+        ],
+        "summary": "德波提醒我们的，不只是景观如何塑造世界，更是我们会如何在不知不觉中用“看”替代理解，用判断替代生活。",
+        "coverLabel": "景观社会",
+        "coverTone": "slate",
+        "coverImage": "posts/Essay/spectacle-cover.png",
+        "file": "posts/Essay/spectacle-society.md"
+    },
+    {
         "id": "os-os-1",
         "title": "操作系统的概念",
         "date": "2026-03-03",
@@ -12,7 +29,8 @@ const POSTS = [
         ],
         "summary": "简单而言，操作系统在用户和硬件之间提供了一个接口，位于硬件之上，用户、应用程序之下。",
         "coverLabel": "操作系统",
-        "coverTone": "teal",
+        "coverTone": "amber",
+        "coverImage": "posts/OS/image-1.png",
         "file": "posts/OS/OS-1.md"
     },
     {
@@ -25,7 +43,8 @@ const POSTS = [
         ],
         "summary": "并发 共享 虚拟 异步 — 这四个特征是操作系统区别于普通软件的根本标志。",
         "coverLabel": "操作系统",
-        "coverTone": "amber",
+        "coverTone": "slate",
+        "coverImage": "posts/OS/image-4.png",
         "file": "posts/OS/OS-2.md"
     }
 ];

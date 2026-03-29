@@ -3,6 +3,24 @@ let currentKeyword = "";
 let currentCategory = "";
 let currentArchive = "";
 let currentBrowserPanel = "";
+let lastListScrollY = 0;
+let activePostId = "";
+
+const GISCUS_CONFIG = {
+    repo: "SY-Jia06/SY-Jia06.github.io",
+    repoId: "R_kgDORaXmKw",
+    category: "Comments",
+    categoryId: "DIC_kwDORaXmK84C5hPk",
+    lang: "zh-CN"
+};
+
+const {
+    initMobileNav,
+    initScrollEffects,
+    formatDate,
+    formatArchive,
+    buildFilterUrl
+} = window.BlogShared;
 
 document.body.classList.add("loading");
 
@@ -11,35 +29,20 @@ document.addEventListener("DOMContentLoaded", () => {
     initMobileNav();
     initScrollEffects();
     initFilters();
+    initCommentsThemeSync();
     renderTopToolbar();
     renderBlogList();
     initBackButton();
+    initHistoryState();
 
-    const hash = window.location.hash.slice(1);
-    if (hash) {
-        openPost(hash);
+    const directPostId = getDirectPostId();
+    if (directPostId) {
+        openPostInternal(directPostId, { skipHistory: true });
         return;
     }
 
     finishSiteLoading();
 });
-
-function initMobileNav() {
-    const navToggle = document.getElementById("navToggle");
-    const mobileMenu = document.getElementById("mobileMenu");
-
-    if (!navToggle || !mobileMenu) return;
-    navToggle.addEventListener("click", () => {
-        mobileMenu.classList.toggle("open");
-    });
-}
-
-function initScrollEffects() {
-    const navbar = document.getElementById("navbar");
-    window.addEventListener("scroll", () => {
-        navbar.classList.toggle("scrolled", window.scrollY > 20);
-    });
-}
 
 function initFilters() {
     renderTagFilter();
@@ -216,8 +219,12 @@ function renderActiveFilters() {
 
     container.innerHTML = `
         ${items.map((item) => `<span class="active-filter-chip">${item}</span>`).join("")}
-        <a class="active-filter-clear" href="blog.html">清除筛选</a>
+        <button type="button" class="active-filter-clear" id="clearFiltersBtn">清除筛选</button>
     `;
+
+    container.querySelector("#clearFiltersBtn")?.addEventListener("click", () => {
+        clearFilters();
+    });
 }
 
 function hasActiveFilters() {
@@ -277,8 +284,13 @@ function filterPosts() {
 }
 
 async function openPost(postId) {
+    return openPostInternal(postId, { skipHistory: false });
+}
+
+async function openPostInternal(postId, { skipHistory = false } = {}) {
     const post = POSTS.find((item) => item.id === postId);
     if (!post) return;
+    activePostId = post.id;
 
     const listPanel = document.getElementById("listPanel");
     const blogList = document.getElementById("blogList");
@@ -297,7 +309,13 @@ async function openPost(postId) {
     quickBrowser.style.display = "none";
     blogPageLayout.classList.add("reading-mode");
     postView.style.display = "block";
-    window.location.hash = post.id;
+
+    if (!skipHistory) {
+        lastListScrollY = window.scrollY;
+        history.replaceState({ view: "list", scrollY: lastListScrollY }, "", buildCurrentUrl());
+        const nextUrl = buildCurrentUrl(post.id);
+        history.pushState({ view: "post", postId, scrollY: lastListScrollY }, "", nextUrl);
+    }
 
     postHeroTitle.textContent = post.title;
     postMetaHead.innerHTML = `
@@ -312,7 +330,8 @@ async function openPost(postId) {
         const markdown = await response.text();
         const renderer = new marked.Renderer();
         const postDir = post.file.substring(0, post.file.lastIndexOf("/") + 1);
-        const heroImage = extractFirstImage(markdown, postDir);
+        const cleanMarkdown = stripFrontMatter(markdown);
+        const heroImage = extractFirstImage(cleanMarkdown, postDir);
         postHero.style.backgroundImage = heroImage
             ? `linear-gradient(135deg, rgba(12, 57, 67, 0.54), rgba(28, 103, 116, 0.36)), url("${heroImage}")`
             : "";
@@ -326,7 +345,8 @@ async function openPost(postId) {
             return `<img src="${src}" alt="${text || ""}"${titleAttr}>`;
         };
 
-        postContent.innerHTML = marked.parse(removeLeadingImage(markdown), { renderer });
+        const readingMarkdown = removeLeadingImage(removeLeadingTitle(cleanMarkdown, post.title));
+        postContent.innerHTML = marked.parse(readingMarkdown, { renderer });
     } catch (error) {
         postHero.style.backgroundImage = "";
         postContent.innerHTML = `
@@ -338,6 +358,8 @@ async function openPost(postId) {
         `;
     }
 
+    renderComments(post);
+
     finishSiteLoading();
     window.scrollTo({ top: 0, behavior: "smooth" });
 }
@@ -347,20 +369,143 @@ function initBackButton() {
     if (!backBtn) return;
 
     backBtn.addEventListener("click", () => {
-        document.getElementById("listPanel").style.display = "";
-        document.getElementById("blogList").style.display = "";
-        document.getElementById("blogTopToolbar").style.display = "";
-        document.getElementById("quickBrowser").style.display = "";
-        document.getElementById("blogPageLayout").classList.remove("reading-mode");
-        document.getElementById("postView").style.display = "none";
-        history.pushState("", document.title, window.location.pathname);
+        if (getDirectPostId()) {
+            const directPostId = getDirectPostId();
+            const cameFromList = window.history.length > 1 && history.state?.view === "post";
+
+            if (cameFromList && directPostId) {
+                history.back();
+                return;
+            }
+
+            window.location.href = buildCurrentUrl();
+            return;
+        }
+        closePostView({ skipHistory: true, restoreScrollY: lastListScrollY });
     });
 }
 
+function initHistoryState() {
+    const directPostId = getDirectPostId();
+    history.replaceState(
+        {
+            view: directPostId ? "post" : "list",
+            postId: directPostId || null,
+            scrollY: window.scrollY
+        },
+        "",
+        buildCurrentUrl(directPostId)
+    );
+
+    window.addEventListener("popstate", (event) => {
+        const directPostId = getDirectPostId();
+        if (directPostId) {
+            openPostInternal(directPostId, { skipHistory: true });
+            return;
+        }
+        closePostView({ skipHistory: true, restoreScrollY: event.state?.scrollY ?? lastListScrollY });
+    });
+}
+
+function closePostView({ skipHistory = false, restoreScrollY = 0 } = {}) {
+    document.getElementById("listPanel").style.display = "";
+    document.getElementById("blogList").style.display = "";
+    document.getElementById("blogTopToolbar").style.display = "";
+    document.getElementById("quickBrowser").style.display = "";
+    document.getElementById("blogPageLayout").classList.remove("reading-mode");
+    document.getElementById("postView").style.display = "none";
+    activePostId = "";
+    clearComments();
+
+    if (!skipHistory) {
+        history.pushState({ view: "list", scrollY: restoreScrollY }, "", buildCurrentUrl());
+    } else {
+        history.replaceState({ view: "list", scrollY: restoreScrollY }, "", buildCurrentUrl());
+    }
+
+    window.setTimeout(() => {
+        window.scrollTo({ top: restoreScrollY, behavior: "auto" });
+    }, 0);
+}
+
+function initCommentsThemeSync() {
+    window.addEventListener("blog-theme-change", () => {
+        if (!activePostId) return;
+        const post = POSTS.find((item) => item.id === activePostId);
+        if (!post) return;
+        renderComments(post);
+    });
+}
+
+function renderComments(post) {
+    const commentsSection = document.getElementById("postComments");
+    const commentsSetup = document.getElementById("postCommentsSetup");
+    const commentsEmbed = document.getElementById("postCommentsEmbed");
+    if (!commentsSection || !commentsSetup || !commentsEmbed) return;
+
+    commentsSection.hidden = false;
+    commentsEmbed.innerHTML = "";
+
+    if (!isCommentsConfigured()) {
+        commentsSetup.hidden = false;
+        commentsSetup.innerHTML = `评论区配置还没填完整。先在 GitHub 开启 Discussions 并创建 <code>${GISCUS_CONFIG.category}</code> 分类，再把 <code>categoryId</code> 填到 <code>blog-app.js</code> 里的 <code>GISCUS_CONFIG</code>。`;
+        return;
+    }
+
+    commentsSetup.hidden = true;
+
+    const script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    script.setAttribute("data-repo", GISCUS_CONFIG.repo);
+    script.setAttribute("data-repo-id", GISCUS_CONFIG.repoId);
+    script.setAttribute("data-category", GISCUS_CONFIG.category);
+    script.setAttribute("data-category-id", GISCUS_CONFIG.categoryId);
+    script.setAttribute("data-mapping", "specific");
+    script.setAttribute("data-term", post.id);
+    script.setAttribute("data-strict", "1");
+    script.setAttribute("data-reactions-enabled", "1");
+    script.setAttribute("data-emit-metadata", "0");
+    script.setAttribute("data-input-position", "top");
+    script.setAttribute("data-theme", getCommentsTheme());
+    script.setAttribute("data-lang", GISCUS_CONFIG.lang);
+    commentsEmbed.appendChild(script);
+}
+
+function clearComments() {
+    const commentsSection = document.getElementById("postComments");
+    const commentsSetup = document.getElementById("postCommentsSetup");
+    const commentsEmbed = document.getElementById("postCommentsEmbed");
+    if (commentsEmbed) commentsEmbed.innerHTML = "";
+    if (commentsSetup) {
+        commentsSetup.hidden = true;
+        commentsSetup.textContent = "";
+    }
+    if (commentsSection) commentsSection.hidden = true;
+}
+
+function isCommentsConfigured() {
+    return Boolean(
+        GISCUS_CONFIG.repo &&
+        GISCUS_CONFIG.repoId &&
+        GISCUS_CONFIG.category &&
+        GISCUS_CONFIG.categoryId
+    );
+}
+
+function getCommentsTheme() {
+    return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+}
+
 function buildPostCard(post) {
+    const coverStyle = post.coverImage
+        ? ` style="--cover-image: url('${post.coverImage}');"`
+        : "";
+    const imageClass = post.coverImage ? " has-image" : "";
     return `
         <article class="post-card">
-            <div class="post-card-cover tone-${post.coverTone || "teal"}">
+            <div class="post-card-cover tone-${post.coverTone || "teal"}${imageClass}"${coverStyle}>
                 <span>${post.coverLabel || "POST"}</span>
                 <span>${post.date.slice(5).replace("-", ".")}</span>
             </div>
@@ -375,19 +520,6 @@ function buildPostCard(post) {
             </div>
         </article>
     `;
-}
-
-function formatDate(dateStr) {
-    return new Date(dateStr).toLocaleDateString("zh-CN", {
-        year: "numeric",
-        month: "long",
-        day: "numeric"
-    });
-}
-
-function formatArchive(value) {
-    const [year, month] = value.split("-");
-    return `${year} 年 ${Number(month)} 月`;
 }
 
 function restoreFiltersFromUrl() {
@@ -408,14 +540,6 @@ function syncFiltersToUrl() {
     history.replaceState("", document.title, `${window.location.pathname}${query ? `?${query}` : ""}${window.location.hash}`);
 }
 
-function buildFilterUrl(filters) {
-    const params = new URLSearchParams();
-    Object.entries(filters).forEach(([key, value]) => {
-        if (value) params.set(key, value);
-    });
-    return `blog.html?${params.toString()}`;
-}
-
 function extractFirstImage(markdown, postDir) {
     const match = markdown.match(/!\[[^\]]*]\(([^)]+)\)/);
     if (!match) return "";
@@ -429,6 +553,33 @@ function extractFirstImage(markdown, postDir) {
 
 function removeLeadingImage(markdown) {
     return markdown.replace(/^\s*!\[[^\]]*]\(([^)]+)\)\s*/m, "").trimStart();
+}
+
+function stripFrontMatter(markdown) {
+    return markdown.replace(/^---\s*\r?\n[\s\S]*?\r?\n---\s*\r?\n/, "");
+}
+
+function removeLeadingTitle(markdown, title) {
+    const escapedTitle = escapeRegExp(title.trim());
+    const pattern = new RegExp(`^\\s*#\\s+${escapedTitle}\\s*\\r?\\n+`, "u");
+    return markdown.replace(pattern, "").trimStart();
+}
+
+function escapeRegExp(value) {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function getDirectPostId() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("post") || window.location.hash.slice(1) || "";
+}
+
+function buildCurrentUrl(postId = "") {
+    const params = new URLSearchParams(window.location.search);
+    params.delete("post");
+    if (postId) params.set("post", postId);
+    const query = params.toString();
+    return `${window.location.pathname}${query ? `?${query}` : ""}`;
 }
 
 function finishSiteLoading() {

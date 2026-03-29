@@ -1,5 +1,14 @@
 document.body.classList.add("loading");
 
+const {
+    initMobileNav,
+    initScrollEffects,
+    formatDate,
+    formatArchive,
+    buildFilterUrl,
+    buildPostUrl
+} = window.BlogShared;
+
 document.addEventListener("DOMContentLoaded", () => {
     initNavigation();
     initScrollEffects();
@@ -47,13 +56,6 @@ function restorePageFromHash() {
     if (["home", "projects"].includes(hash)) {
         navigateTo(hash);
     }
-}
-
-function initScrollEffects() {
-    const navbar = document.getElementById("navbar");
-    window.addEventListener("scroll", () => {
-        navbar.classList.toggle("scrolled", window.scrollY > 20);
-    });
 }
 
 function renderHomePage() {
@@ -116,9 +118,13 @@ function renderHomeStats() {
 }
 
 function buildPostCard(post, linkToPage = false) {
+    const coverStyle = post.coverImage
+        ? ` style="--cover-image: url('${post.coverImage}');"`
+        : "";
+    const imageClass = post.coverImage ? " has-image" : "";
     const card = `
         <article class="post-card">
-            <div class="post-card-cover tone-${post.coverTone || "teal"}">
+            <div class="post-card-cover tone-${post.coverTone || "teal"}${imageClass}"${coverStyle}>
                 <span>${post.coverLabel || "POST"}</span>
                 <span>${post.date.slice(5).replace("-", ".")}</span>
             </div>
@@ -135,33 +141,10 @@ function buildPostCard(post, linkToPage = false) {
     `;
 
     if (linkToPage) {
-        return `<a class="post-card-link" href="blog.html#${post.id}">${card}</a>`;
+        return `<a class="post-card-link" href="${buildPostUrl(post.id)}">${card}</a>`;
     }
 
     return card;
-}
-
-function formatDate(dateStr) {
-    return new Date(dateStr).toLocaleDateString("zh-CN", {
-        year: "numeric",
-        month: "long",
-        day: "numeric"
-    });
-}
-
-function formatArchive(value) {
-    const [year, month] = value.split("-");
-    return `${year} 年 ${Number(month)} 月`;
-}
-
-function buildFilterUrl(filters) {
-    const params = new URLSearchParams();
-    Object.entries(filters).forEach(([key, value]) => {
-        if (value) {
-            params.set(key, value);
-        }
-    });
-    return `blog.html?${params.toString()}`;
 }
 
 function finishSiteLoading() {

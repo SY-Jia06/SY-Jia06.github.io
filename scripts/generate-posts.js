@@ -58,6 +58,7 @@ function buildPostRecord(filePath, index) {
     const id = frontMatter.id || slugify(relativePath.replace(/^posts\//, "").replace(/\.md$/i, ""));
     const coverLabel = frontMatter.coverLabel || buildCoverLabel(title, category);
     const coverTone = normalizeCoverTone(frontMatter.coverTone, index);
+    const coverImage = frontMatter.coverImage || extractCoverImage(body, relativePath);
 
     return {
         id,
@@ -68,6 +69,7 @@ function buildPostRecord(filePath, index) {
         summary,
         coverLabel,
         coverTone,
+        coverImage,
         file: relativePath
     };
 }
@@ -207,7 +209,8 @@ function normalizeCategory(value) {
     const map = {
         OS: "操作系统",
         DB: "数据库",
-        NET: "计算机网络"
+        NET: "计算机网络",
+        Essay: "随笔"
     };
 
     return map[value] || value;
@@ -225,6 +228,19 @@ function normalizeCoverTone(value, index) {
         return value;
     }
     return COVER_TONES[index % COVER_TONES.length];
+}
+
+function extractCoverImage(markdown, relativePath) {
+    const match = markdown.match(/!\[[^\]]*]\(([^)]+)\)/);
+    if (!match) return "";
+
+    const src = match[1].trim();
+    if (src.startsWith("http") || src.startsWith("/")) {
+        return src;
+    }
+
+    const postDir = normalizePath(path.dirname(relativePath));
+    return `${postDir}/${src}`.replace(/\/+/g, "/");
 }
 
 function slugify(value) {

@@ -53,6 +53,9 @@
     --filter-chip-bg: #ffffff;
     --filter-chip-text: var(--text-body);
     --filter-chip-border: var(--line-soft);
+    --filter-chip-active-bg: var(--text-strong);
+    --filter-chip-active-text: #ffffff;
+    --filter-chip-active-border: var(--text-strong);
 }
 
 html[data-theme="dark"] {
@@ -99,6 +102,9 @@ html[data-theme="dark"] {
     --filter-chip-bg: #eef6f4;
     --filter-chip-text: #183038;
     --filter-chip-border: rgba(255, 255, 255, 0.08);
+    --filter-chip-active-bg: #eef6f4;
+    --filter-chip-active-text: #183038;
+    --filter-chip-active-border: #eef6f4;
 }
 
 *,
@@ -648,16 +654,38 @@ input {
 }
 
 .post-card-cover {
+    position: relative;
     min-height: 134px;
     border-radius: var(--radius-md);
     padding: 18px;
-    display: flex;
-    align-items: end;
-    justify-content: space-between;
     color: white;
     font-weight: 700;
     letter-spacing: 0.06em;
     background: linear-gradient(135deg, #0f5865, #1792a1);
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+}
+
+.post-card-cover > * {
+    position: relative;
+    z-index: 1;
+}
+
+.post-card-cover span:first-child {
+    position: absolute;
+    left: 18px;
+    bottom: 18px;
+    max-width: calc(100% - 92px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.post-card-cover span:last-child {
+    position: absolute;
+    right: 18px;
+    bottom: 18px;
 }
 
 .tone-amber {
@@ -666,6 +694,21 @@ input {
 
 .tone-slate {
     background: linear-gradient(135deg, #405763, #738b96);
+}
+
+.post-card-cover.has-image {
+    background-image: var(--cover-image);
+    background-size: contain;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-color: rgba(26, 40, 46, 0.92);
+}
+
+.post-card-cover.has-image::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(12, 27, 33, 0.08), rgba(12, 27, 33, 0.36));
 }
 
 .post-card-body {
@@ -818,6 +861,20 @@ input {
     margin-top: 18px;
     padding-top: 18px;
     border-top: 1px solid var(--line-soft);
+}
+
+.mini-project-group + .mini-project-group {
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line-soft);
+}
+
+.mini-project-group-title {
+    margin: 8px 0 14px;
+    color: var(--text-strong);
+    font-size: 1.08rem;
+    font-weight: 600;
+    line-height: 1.25;
 }
 
 .mini-project h3,
@@ -1270,9 +1327,9 @@ a.about-contact-item:hover .contact-text {
 
 .tag-btn.active,
 .tag-cloud button.active {
-    background: var(--text-strong);
-    color: white;
-    border-color: var(--text-strong);
+    background: var(--filter-chip-active-bg);
+    color: var(--filter-chip-active-text);
+    border-color: var(--filter-chip-active-border);
 }
 
 .tag-cloud-link {
@@ -1366,6 +1423,25 @@ a.about-contact-item:hover .contact-text {
     max-width: 920px;
     margin: -46px auto 0;
     padding: 34px 38px 38px;
+}
+
+.post-comments-shell {
+    max-width: 920px;
+    margin: 24px auto 0;
+    padding: 28px 30px;
+    background: var(--post-shell-bg);
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+}
+
+.section-heading-compact {
+    margin-bottom: 16px;
+}
+
+.post-comments-setup {
+    margin: 0 0 12px;
+    color: var(--text-muted);
 }
 
 .post-content {

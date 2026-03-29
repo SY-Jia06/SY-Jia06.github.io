@@ -6,12 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="SY-Jia06 的技术博客列表。">
     <title>博客列表 | SY-Jia06</title>
-    <script src="theme.js"></script>
+    <script src="theme.js?v=20260329a"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=20260329a">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 
@@ -100,6 +100,14 @@
                         <article class="post-shell post-shell-reading">
                             <article class="post-content" id="postContent"></article>
                         </article>
+                        <section class="post-comments-shell" id="postComments" hidden>
+                            <div class="section-heading section-heading-compact">
+                                <span class="section-eyebrow">Discussion</span>
+                                <h2>评论区</h2>
+                            </div>
+                            <p class="post-comments-setup" id="postCommentsSetup" hidden></p>
+                            <div class="giscus" id="postCommentsEmbed"></div>
+                        </section>
                     </div>
                 </section>
             </div>
@@ -111,8 +119,9 @@
         </div>
     </footer>
 
-    <script src="posts.js"></script>
-    <script src="blog-app.js"></script>
+    <script src="shared.js?v=20260328b"></script>
+    <script src="posts.js?v=20260328b"></script>
+    <script src="blog-app.js?v=20260329a"></script>
 </body>
 
 </html>
