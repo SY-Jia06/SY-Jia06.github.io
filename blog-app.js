@@ -293,6 +293,7 @@ async function openPostInternal(postId, { skipHistory = false } = {}) {
     activePostId = post.id;
     window.ReadingEnhancements?.unmount();
 
+    const blogListShell = document.getElementById("blogListShell");
     const listPanel = document.getElementById("listPanel");
     const blogList = document.getElementById("blogList");
     const blogPageLayout = document.getElementById("blogPageLayout");
@@ -303,11 +304,14 @@ async function openPostInternal(postId, { skipHistory = false } = {}) {
     const postMetaHead = document.getElementById("postMetaHead");
     const blogTopToolbar = document.getElementById("blogTopToolbar");
     const quickBrowser = document.getElementById("quickBrowser");
+    const blogBanner = document.getElementById("blogBanner");
 
+    if (blogListShell) blogListShell.style.display = "none";
     listPanel.style.display = "none";
     blogList.style.display = "none";
     blogTopToolbar.style.display = "none";
     quickBrowser.style.display = "none";
+    if (blogBanner) blogBanner.style.display = "none";
     blogPageLayout.classList.add("reading-mode");
     postView.style.display = "block";
 
@@ -414,10 +418,14 @@ function initHistoryState() {
 }
 
 function closePostView({ skipHistory = false, restoreScrollY = 0 } = {}) {
+    const blogListShell = document.getElementById("blogListShell");
+    if (blogListShell) blogListShell.style.display = "";
     document.getElementById("listPanel").style.display = "";
     document.getElementById("blogList").style.display = "";
     document.getElementById("blogTopToolbar").style.display = "";
     document.getElementById("quickBrowser").style.display = "";
+    const blogBanner = document.getElementById("blogBanner");
+    if (blogBanner) blogBanner.style.display = "";
     document.getElementById("blogPageLayout").classList.remove("reading-mode");
     document.getElementById("postView").style.display = "none";
     window.ReadingEnhancements?.unmount();

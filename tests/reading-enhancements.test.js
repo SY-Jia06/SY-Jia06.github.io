@@ -5,7 +5,9 @@ const {
     slugifyHeading,
     shouldShowToc,
     getAdjacentPosts,
-    computeReadingProgress
+    computeReadingProgress,
+    getSubtocItems,
+    getActiveHeadingFromPositions
 } = require("../reading-enhancements.js");
 
 test("slugifyHeading normalizes plain headings into stable ids", () => {
@@ -13,8 +15,8 @@ test("slugifyHeading normalizes plain headings into stable ids", () => {
     assert.equal(slugifyHeading("What is Spectacle?"), "what-is-spectacle");
 });
 
-test("shouldShowToc requires at least one h2 and one h3", () => {
-    assert.equal(shouldShowToc([{ level: 2 }]), false);
+test("shouldShowToc requires at least one h2", () => {
+    assert.equal(shouldShowToc([{ level: 2 }]), true);
     assert.equal(shouldShowToc([{ level: 3 }]), false);
     assert.equal(shouldShowToc([{ level: 2 }, { level: 3 }]), true);
 });
@@ -37,4 +39,28 @@ test("computeReadingProgress clamps between 0 and 1", () => {
     assert.equal(computeReadingProgress({ start: 100, end: 500, scrollY: 50 }), 0);
     assert.equal(computeReadingProgress({ start: 100, end: 500, scrollY: 300 }), 0.5);
     assert.equal(computeReadingProgress({ start: 100, end: 500, scrollY: 999 }), 1);
+});
+
+test("getSubtocItems keeps only h3 items under current h2", () => {
+    const headings = [
+        { id: "intro", level: 2, text: "引子" },
+        { id: "intro-a", level: 3, text: "小节 A", parentId: "intro" },
+        { id: "intro-b", level: 3, text: "小节 B", parentId: "intro" },
+        { id: "next", level: 2, text: "下一章" },
+        { id: "next-a", level: 3, text: "小节 C", parentId: "next" }
+    ];
+
+    assert.deepEqual(getSubtocItems(headings, "intro"), [
+        { id: "intro-a", level: 3, text: "小节 A", parentId: "intro" },
+        { id: "intro-b", level: 3, text: "小节 B", parentId: "intro" }
+    ]);
+});
+
+test("getActiveHeadingFromPositions promotes a new h2 once it enters the activation band", () => {
+    const headings = [
+        { id: "prev-h3", level: 3, top: 40, parentId: "old-h2" },
+        { id: "new-h2", level: 2, top: 220, parentId: "" }
+    ];
+
+    assert.deepEqual(getActiveHeadingFromPositions(headings, 260), headings[1]);
 });

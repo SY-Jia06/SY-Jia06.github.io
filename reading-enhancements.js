@@ -2,7 +2,9 @@
     const state = {
         scrollHandler: null,
         headings: [],
-        contentElement: null
+        contentElement: null,
+        activeHeadingId: "",
+        activeH2Id: ""
     };
 
     function slugifyHeading(text) {
@@ -24,9 +26,7 @@
     }
 
     function shouldShowToc(items) {
-        const hasH2 = items.some((item) => item.level === 2);
-        const hasH3 = items.some((item) => item.level === 3);
-        return hasH2 && hasH3;
+        return items.some((item) => item.level === 2);
     }
 
     function getAdjacentPosts(posts, postId) {
@@ -34,6 +34,7 @@
         if (index === -1) {
             return { previous: null, next: null };
         }
+
         return {
             previous: posts[index - 1] || null,
             next: posts[index + 1] || null
@@ -44,6 +45,23 @@
         if (end <= start) return 1;
         const raw = (scrollY - start) / (end - start);
         return Math.max(0, Math.min(1, raw));
+    }
+
+    function getSubtocItems(headings, activeH2Id) {
+        return headings.filter((item) => item.level === 3 && item.parentId === activeH2Id);
+    }
+
+    function getActiveHeadingFromPositions(headings, activationBandY) {
+        if (!headings.length) return null;
+
+        let active = headings[0];
+        headings.forEach((item) => {
+            if (item.top <= activationBandY) {
+                active = item;
+            }
+        });
+
+        return active;
     }
 
     function createUniqueIds(headings) {
@@ -57,45 +75,37 @@
     }
 
     function collectHeadings(contentElement) {
-        const headings = Array.from(contentElement.querySelectorAll("h2, h3"));
-        const ids = createUniqueIds(headings);
+        const headingElements = Array.from(contentElement.querySelectorAll("h2, h3"));
+        const ids = createUniqueIds(headingElements);
+        let currentH2Id = "";
 
-        return headings.map((heading, index) => {
+        return headingElements.map((heading, index) => {
             const level = Number(heading.tagName.slice(1));
             const id = ids[index];
             heading.id = id;
+
+            if (level === 2) currentH2Id = id;
+
             return {
                 id,
                 level,
                 text: heading.textContent.trim(),
-                element: heading
+                element: heading,
+                parentId: level === 3 ? currentH2Id : ""
             };
         });
     }
 
-    function renderToc(items) {
-        const toc = document.getElementById("postToc");
-        if (!toc) return;
+    function buildTocLinks(items, activeId, linkClass) {
+        return items.map((item) => `
+            <a href="#${item.id}" class="${linkClass} level-${item.level}${item.id === activeId ? " active" : ""}" data-toc-id="${item.id}">
+                ${item.text}
+            </a>
+        `).join("");
+    }
 
-        if (!shouldShowToc(items)) {
-            toc.hidden = true;
-            toc.innerHTML = "";
-            return;
-        }
-
-        toc.hidden = false;
-        toc.innerHTML = `
-            <div class="post-toc-label">目录</div>
-            <div class="post-toc-list">
-                ${items.map((item) => `
-                    <a href="#${item.id}" class="post-toc-link level-${item.level}" data-toc-id="${item.id}">
-                        ${item.text}
-                    </a>
-                `).join("")}
-            </div>
-        `;
-
-        toc.querySelectorAll("[data-toc-id]").forEach((link) => {
+    function bindTocClicks(root) {
+        root.querySelectorAll("[data-toc-id]").forEach((link) => {
             link.addEventListener("click", (event) => {
                 event.preventDefault();
                 const target = document.getElementById(link.dataset.tocId);
@@ -103,6 +113,52 @@
                 target.scrollIntoView({ behavior: "smooth", block: "start" });
             });
         });
+    }
+
+    function renderGlobalToc(items, activeId) {
+        const toc = document.getElementById("postToc");
+        if (!toc) return false;
+
+        if (!shouldShowToc(items)) {
+            toc.hidden = true;
+            toc.innerHTML = "";
+            return false;
+        }
+
+        toc.hidden = false;
+        toc.innerHTML = `
+            <div class="post-side-label">目录</div>
+            <div class="post-toc-list">
+                ${buildTocLinks(items, activeId, "post-toc-link")}
+            </div>
+        `;
+        bindTocClicks(toc);
+        return true;
+    }
+
+    function renderSubtoc(items, activeHeadingId, activeH2Id) {
+        const subtoc = document.getElementById("postSubtoc");
+        if (!subtoc) return false;
+
+        const children = getSubtocItems(items, activeH2Id);
+        if (children.length === 0) {
+            subtoc.hidden = false;
+            subtoc.innerHTML = `
+                <div class="post-side-label">本节</div>
+                <p class="post-subtoc-empty">当前章节没有更细的子目录。</p>
+            `;
+            return true;
+        }
+
+        subtoc.hidden = false;
+        subtoc.innerHTML = `
+            <div class="post-side-label">本节</div>
+            <div class="post-subtoc-list">
+                ${buildTocLinks(children, activeHeadingId, "post-subtoc-link")}
+            </div>
+        `;
+        bindTocClicks(subtoc);
+        return true;
     }
 
     function renderPagination(posts, postId) {
@@ -139,21 +195,37 @@
         });
     }
 
-    function updateTocActive(scrollY) {
-        const tocLinks = document.querySelectorAll("[data-toc-id]");
-        if (!tocLinks.length || !state.headings.length) return;
+    function getActiveHeading(scrollY) {
+        const activationBandY = Math.max(180, Math.min(260, Math.round(window.innerHeight * 0.28)));
+        const positioned = state.headings.map((item) => ({
+            ...item,
+            top: item.element.getBoundingClientRect().top
+        }));
 
-        let activeId = state.headings[0].id;
-        state.headings.forEach((item) => {
-            const top = item.element.getBoundingClientRect().top + window.scrollY;
-            if (scrollY >= top - 120) {
-                activeId = item.id;
-            }
-        });
+        return getActiveHeadingFromPositions(positioned, activationBandY);
+    }
 
-        tocLinks.forEach((link) => {
-            link.classList.toggle("active", link.dataset.tocId === activeId);
-        });
+    function syncTocs() {
+        if (!state.headings.length) return;
+
+        const active = getActiveHeading(window.scrollY);
+        if (!active) return;
+
+        const activeH2Id = active.level === 2 ? active.id : active.parentId;
+        state.activeHeadingId = active.id;
+        state.activeH2Id = activeH2Id;
+
+        const hasGlobal = renderGlobalToc(state.headings, state.activeHeadingId);
+        const hasSubtoc = renderSubtoc(state.headings, state.activeHeadingId, state.activeH2Id);
+
+        const layout = document.getElementById("articleLayout");
+
+        if (layout) {
+            layout.classList.toggle("has-left-toc", hasGlobal);
+            layout.classList.toggle("has-right-toc", hasSubtoc);
+            layout.classList.toggle("toc-both", hasGlobal && hasSubtoc);
+            layout.classList.toggle("toc-left-only", hasGlobal && !hasSubtoc);
+        }
     }
 
     function updateProgress() {
@@ -172,7 +244,7 @@
 
         progress.hidden = false;
         progressBar.style.transform = `scaleX(${ratio})`;
-        updateTocActive(window.scrollY);
+        syncTocs();
     }
 
     function mount({ post, posts, contentElement }) {
@@ -182,8 +254,8 @@
         state.contentElement = contentElement;
         state.headings = collectHeadings(contentElement);
 
-        renderToc(state.headings);
         renderPagination(posts, post.id);
+        syncTocs();
 
         state.scrollHandler = () => updateProgress();
         window.addEventListener("scroll", state.scrollHandler, { passive: true });
@@ -200,11 +272,15 @@
         state.scrollHandler = null;
         state.headings = [];
         state.contentElement = null;
+        state.activeHeadingId = "";
+        state.activeH2Id = "";
 
         const progress = document.getElementById("readingProgress");
         const progressBar = document.getElementById("readingProgressBar");
         const toc = document.getElementById("postToc");
+        const subtoc = document.getElementById("postSubtoc");
         const pagination = document.getElementById("postPagination");
+        const layout = document.getElementById("articleLayout");
 
         if (progress) progress.hidden = true;
         if (progressBar) progressBar.style.transform = "scaleX(0)";
@@ -212,9 +288,16 @@
             toc.hidden = true;
             toc.innerHTML = "";
         }
+        if (subtoc) {
+            subtoc.hidden = true;
+            subtoc.innerHTML = "";
+        }
         if (pagination) {
             pagination.hidden = true;
             pagination.innerHTML = "";
+        }
+        if (layout) {
+            layout.classList.remove("has-left-toc", "has-right-toc", "toc-both", "toc-left-only");
         }
     }
 
@@ -224,7 +307,9 @@
         slugifyHeading,
         shouldShowToc,
         getAdjacentPosts,
-        computeReadingProgress
+        computeReadingProgress,
+        getSubtocItems,
+        getActiveHeadingFromPositions
     };
 
     if (typeof module !== "undefined" && module.exports) {
