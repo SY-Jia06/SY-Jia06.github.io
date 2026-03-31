@@ -22,6 +22,13 @@ const {
     buildFilterUrl
 } = window.BlogShared;
 
+const {
+    extractFirstImage,
+    removeLeadingImage,
+    stripFrontMatter,
+    removeLeadingTitle
+} = window.ArticleMarkdown;
+
 document.body.classList.add("loading");
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -553,35 +560,6 @@ function syncFiltersToUrl() {
     if (currentKeyword) params.set("q", currentKeyword);
     const query = params.toString();
     history.replaceState("", document.title, `${window.location.pathname}${query ? `?${query}` : ""}${window.location.hash}`);
-}
-
-function extractFirstImage(markdown, postDir) {
-    const match = markdown.match(/!\[[^\]]*]\(([^)]+)\)/);
-    if (!match) return "";
-
-    let src = match[1].trim();
-    if (!src.startsWith("http") && !src.startsWith("/")) {
-        src = `${postDir}${src}`;
-    }
-    return src;
-}
-
-function removeLeadingImage(markdown) {
-    return markdown.replace(/^\s*!\[[^\]]*]\(([^)]+)\)\s*/m, "").trimStart();
-}
-
-function stripFrontMatter(markdown) {
-    return markdown.replace(/^---\s*\r?\n[\s\S]*?\r?\n---\s*\r?\n/, "");
-}
-
-function removeLeadingTitle(markdown, title) {
-    const escapedTitle = escapeRegExp(title.trim());
-    const pattern = new RegExp(`^\\s*#\\s+${escapedTitle}\\s*\\r?\\n+`, "u");
-    return markdown.replace(pattern, "").trimStart();
-}
-
-function escapeRegExp(value) {
-    return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 function getDirectPostId() {
