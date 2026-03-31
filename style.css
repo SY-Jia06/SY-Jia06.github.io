@@ -2011,6 +2011,13 @@ html[data-theme="dark"] .post-subtoc-empty {
         padding: 92px 22px 34px;
     }
 
+    .back-btn {
+        position: sticky;
+        top: calc(var(--nav-height) + 12px);
+        z-index: 25;
+        margin-bottom: 14px;
+    }
+
     .post-shell-reading {
         margin-top: -28px;
         padding: 24px 20px 28px;
