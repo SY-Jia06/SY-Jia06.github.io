@@ -3,6 +3,23 @@
 
 const POSTS = [
     {
+        "id": "essay-belief-shifts",
+        "title": "我的一些思想观念的变化",
+        "date": "2026-03-31",
+        "category": "随笔",
+        "tags": [
+            "成长",
+            "自我觉察",
+            "思考",
+            "随笔"
+        ],
+        "summary": "回看这些年思想观念的几次转向，我越来越相信，所谓成长不是线性进步，而是在丢弃、得到、觉察和重建之间，慢慢找到自己的心。",
+        "coverLabel": "观念变化",
+        "coverTone": "slate",
+        "coverImage": "posts/Essay/belief-shifts-1.jpg",
+        "file": "posts/Essay/belief-shifts.md"
+    },
+    {
         "id": "essay-spectacle-society",
         "title": "景观社会：当我们用「看」替代「活」",
         "date": "2026-03-28",
@@ -29,7 +46,7 @@ const POSTS = [
         ],
         "summary": "简单而言，操作系统在用户和硬件之间提供了一个接口，位于硬件之上，用户、应用程序之下。",
         "coverLabel": "操作系统",
-        "coverTone": "amber",
+        "coverTone": "slate",
         "coverImage": "posts/OS/image-1.png",
         "file": "posts/OS/OS-1.md"
     },
@@ -43,7 +60,7 @@ const POSTS = [
         ],
         "summary": "并发 共享 虚拟 异步 — 这四个特征是操作系统区别于普通软件的根本标志。",
         "coverLabel": "操作系统",
-        "coverTone": "slate",
+        "coverTone": "teal",
         "coverImage": "posts/OS/image-4.png",
         "file": "posts/OS/OS-2.md"
     }
