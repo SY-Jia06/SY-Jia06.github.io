@@ -4,6 +4,7 @@ const assert = require("node:assert/strict");
 const {
     slugifyHeading,
     shouldShowToc,
+    shouldRenderDesktopSidebars,
     getAdjacentPosts,
     computeReadingProgress,
     getSubtocItems,
@@ -19,6 +20,12 @@ test("shouldShowToc requires at least one h2", () => {
     assert.equal(shouldShowToc([{ level: 2 }]), true);
     assert.equal(shouldShowToc([{ level: 3 }]), false);
     assert.equal(shouldShowToc([{ level: 2 }, { level: 3 }]), true);
+});
+
+test("shouldRenderDesktopSidebars disables chapter sidebars on narrow screens", () => {
+    assert.equal(shouldRenderDesktopSidebars(1200), true);
+    assert.equal(shouldRenderDesktopSidebars(980), false);
+    assert.equal(shouldRenderDesktopSidebars(430), false);
 });
 
 test("getAdjacentPosts returns previous and next in current order", () => {

@@ -29,6 +29,10 @@
         return items.some((item) => item.level === 2);
     }
 
+    function shouldRenderDesktopSidebars(viewportWidth) {
+        return viewportWidth > 980;
+    }
+
     function getAdjacentPosts(posts, postId) {
         const index = posts.findIndex((item) => item.id === postId);
         if (index === -1) {
@@ -206,6 +210,25 @@
     }
 
     function syncTocs() {
+        const toc = document.getElementById("postToc");
+        const subtoc = document.getElementById("postSubtoc");
+        const layout = document.getElementById("articleLayout");
+
+        if (!shouldRenderDesktopSidebars(window.innerWidth)) {
+            if (toc) {
+                toc.hidden = true;
+                toc.innerHTML = "";
+            }
+            if (subtoc) {
+                subtoc.hidden = true;
+                subtoc.innerHTML = "";
+            }
+            if (layout) {
+                layout.classList.remove("has-left-toc", "has-right-toc", "toc-both", "toc-left-only");
+            }
+            return;
+        }
+
         if (!state.headings.length) return;
 
         const active = getActiveHeading(window.scrollY);
@@ -217,8 +240,6 @@
 
         const hasGlobal = renderGlobalToc(state.headings, state.activeHeadingId);
         const hasSubtoc = renderSubtoc(state.headings, state.activeHeadingId, state.activeH2Id);
-
-        const layout = document.getElementById("articleLayout");
 
         if (layout) {
             layout.classList.toggle("has-left-toc", hasGlobal);
@@ -306,6 +327,7 @@
         unmount,
         slugifyHeading,
         shouldShowToc,
+        shouldRenderDesktopSidebars,
         getAdjacentPosts,
         computeReadingProgress,
         getSubtocItems,
