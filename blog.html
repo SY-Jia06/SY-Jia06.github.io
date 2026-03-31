@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=20260329c">
+    <link rel="stylesheet" href="style.css?v=20260331b">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 
@@ -56,6 +56,13 @@
             <button type="button" class="theme-btn" data-theme-mode="light">浅色</button>
             <button type="button" class="theme-btn" data-theme-mode="dark">深色</button>
             <button type="button" class="theme-btn" data-theme-mode="system">系统</button>
+        </div>
+    </div>
+
+    <div class="image-lightbox" id="imageLightbox" hidden>
+        <div class="image-lightbox-stage">
+            <img id="imageLightboxImg" src="" alt="">
+            <p class="image-lightbox-caption" id="imageLightboxCaption"></p>
         </div>
     </div>
 
@@ -140,8 +147,9 @@
     <script src="shared.js?v=20260328b"></script>
     <script src="posts.js?v=20260328b"></script>
     <script src="article-markdown.js?v=20260331a"></script>
+    <script src="image-lightbox.js?v=20260331b"></script>
     <script src="reading-enhancements.js?v=20260329a"></script>
-    <script src="blog-app.js?v=20260331a"></script>
+    <script src="blog-app.js?v=20260331b"></script>
 </body>
 
 </html>

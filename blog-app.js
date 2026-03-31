@@ -353,12 +353,12 @@ async function openPostInternal(postId, { skipHistory = false } = {}) {
             if (src && !src.startsWith("http") && !src.startsWith("/")) {
                 src = `${postDir}${src}`;
             }
-            const titleAttr = title ? ` title="${title}"` : "";
-            return `<img src="${src}" alt="${text || ""}"${titleAttr}>`;
+            return window.ImageLightbox.renderZoomableImage({ src, title, text });
         };
 
         const readingMarkdown = removeLeadingImage(removeLeadingTitle(cleanMarkdown, post.title));
         postContent.innerHTML = marked.parse(readingMarkdown, { renderer });
+        window.ImageLightbox?.mount({ contentElement: postContent });
         window.ReadingEnhancements?.mount({
             post,
             posts: sortPostsByDate(),
@@ -435,6 +435,7 @@ function closePostView({ skipHistory = false, restoreScrollY = 0 } = {}) {
     if (blogBanner) blogBanner.style.display = "";
     document.getElementById("blogPageLayout").classList.remove("reading-mode");
     document.getElementById("postView").style.display = "none";
+    window.ImageLightbox?.unmount();
     window.ReadingEnhancements?.unmount();
     activePostId = "";
     clearComments();
