@@ -348,3 +348,40 @@ scripts/generate-posts.js
 ```
 
 - 文章列表对外统一叫“博客”，不是“文章列表”
+
+## 10. 两侧目录消失 ≠ 功能被删，先量视口宽度
+
+### 现象
+
+- 改完代码后打开文章，发现左侧全文目录和右侧本节子目录全部不见了
+- 第一反应以为是代码改动误删了 TOC 逻辑
+
+### 真正原因
+
+`reading-enhancements.js` 里有一个响应式守卫：
+
+```js
+function shouldRenderDesktopSidebars(viewportWidth) {
+    return viewportWidth > 980;
+}
+```
+
+当浏览器窗口宽度 ≤ 980px 时，两侧目录会被主动隐藏（`toc.hidden = true`），这是**设计行为**，不是 bug。
+
+最常见的触发场景：**一边开编辑器/聊天窗口，一边把浏览器分屏测试**。分屏后浏览器宽度通常只剩 700-800px，必然低于 980px 阈值。
+
+### 排查方法
+
+1. 把浏览器窗口**最大化**或拉到 > 980px 宽
+2. 目录立刻回来 → 说明是视口宽度问题，不是代码回退
+3. 最大化后仍然没有 → 那才是真的代码出了问题，再去查 `reading-enhancements.js` 和 `blog.html` 中的 `#postToc` / `#postSubtoc` 容器
+
+### 教训
+
+前端"功能消失"类 bug 排查顺序：
+
+1. **环境因素**：视口宽度、缓存、DevTools 模拟设备
+2. **CSS 层**：`display: none` / `hidden` / `visibility` / 媒体查询
+3. **JS 逻辑**：才去怀疑是不是代码真的被改坏了
+
+不要跳过前两步直接进第三步。
