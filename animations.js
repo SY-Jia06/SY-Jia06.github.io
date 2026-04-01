@@ -170,6 +170,47 @@
         });
     }
 
+    /* ─── 7. Page Exit Transition ─── */
+
+    function initPageTransition() {
+        document.addEventListener("click", (e) => {
+            const link = e.target.closest("a[href]");
+            if (!link) return;
+
+            const href = link.getAttribute("href");
+
+            // Skip external links, anchors, JS links, new-tab links
+            if (!href || href.startsWith("#") || href.startsWith("javascript")
+                || link.target === "_blank" || link.hasAttribute("download")
+                || e.ctrlKey || e.metaKey || e.shiftKey) return;
+
+            // Only intercept same-origin HTML links
+            try {
+                const url = new URL(href, location.origin);
+                if (url.origin !== location.origin) return;
+            } catch { return; }
+
+            e.preventDefault();
+
+            gsap.to("main, .banner-shell", {
+                opacity: 0,
+                y: -15,
+                duration: 0.25,
+                ease: "power2.in",
+                onComplete: () => { window.location.href = href; }
+            });
+        });
+
+        // Entry: fade in on page load
+        gsap.from("main", {
+            opacity: 0,
+            y: 15,
+            duration: 0.4,
+            ease: "power2.out",
+            delay: 0.1
+        });
+    }
+
     /* ─── Boot ─── */
 
     function boot() {
@@ -177,6 +218,7 @@
         initBannerParallax();
         initBannerEntry();
         initPanelReveal();
+        initPageTransition();
 
         // Cards need to wait for dynamic rendering
         setTimeout(() => {
