@@ -80,7 +80,7 @@
     --filter-chip-active-text: #ffffff;
     --filter-chip-active-border: var(--text-strong);
     --banner-bg: linear-gradient(135deg, rgba(82, 168, 185, 0.15), rgba(217, 154, 61, 0.08));
-    --banner-overlay: linear-gradient(to bottom, transparent 60%, var(--bg-page) 100%);
+    --banner-overlay: transparent;
     --compact-banner-bg: linear-gradient(135deg, rgba(13, 114, 132, 0.08), rgba(217, 154, 61, 0.05)), radial-gradient(circle at top right, rgba(13, 114, 132, 0.08), transparent 40%);
     --banner-text: var(--text-strong);
     --banner-subtitle-text: var(--text-body);
