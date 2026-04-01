@@ -140,13 +140,13 @@
         const blogList = document.getElementById("blogList");
         if (!blogList || !blogList.children.length) return;
 
-        gsap.from(blogList.children, {
-            y: 50,
-            opacity: 0,
-            duration: 0.6,
-            ease: "power2.out",
-            stagger: 0.08
-        });
+        // Kill any existing tweens to prevent stacking
+        gsap.killTweensOf(blogList.children);
+
+        gsap.fromTo(blogList.children,
+            { y: 50, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.6, ease: "power2.out", stagger: 0.08 }
+        );
     }
 
     /* ─── 5. Section Panels Reveal on Scroll ─── */
