@@ -31,6 +31,8 @@
     /* ─── 2. Blog Card 3D Tilt ─── */
 
     function initCardTilt() {
+        if (window.innerWidth <= 768) return; // Disable on mobile/touch to prevent scroll artifacts
+        
         const cards = document.querySelectorAll(".post-card-link, .random-post-card, .post-card");
         if (!cards.length) return;
 

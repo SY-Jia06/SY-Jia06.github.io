@@ -1978,6 +1978,11 @@ html[data-theme="dark"] .post-subtoc-empty {
         grid-template-columns: 1fr;
     }
 
+    .home-banner {
+        min-height: 80vh;
+        background-position: center 85%;
+    }
+
     .banner-inner {
         padding-top: 70px;
         padding-bottom: 112px;
