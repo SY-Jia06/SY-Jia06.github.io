@@ -533,7 +533,7 @@ function closePostView({ skipHistory = false, restoreScrollY = 0 } = {}) {
         listElements.forEach(el => { el.style.display = ""; el.style.opacity = ""; el.style.transform = ""; });
 
         if (typeof gsap !== "undefined") {
-            gsap.from(listElements, { opacity: 0, y: 20, duration: 0.35, ease: "power2.out", stagger: 0.04 });
+            gsap.from(listElements, { opacity: 0, y: -20, duration: 0.35, ease: "power2.out", stagger: 0.04 });
         }
 
         window.setTimeout(() => {
@@ -543,7 +543,7 @@ function closePostView({ skipHistory = false, restoreScrollY = 0 } = {}) {
 
     if (typeof gsap !== "undefined") {
         gsap.to(postView, {
-            opacity: 0, y: -20, duration: 0.25, ease: "power2.in",
+            opacity: 0, y: 20, duration: 0.25, ease: "power2.in",
             onComplete: restoreList
         });
     } else {
