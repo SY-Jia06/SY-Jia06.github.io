@@ -167,7 +167,8 @@ img {
     place-items: center;
     padding: 24px;
     background: rgba(9, 15, 18, 0.86);
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
 }
 
 .image-lightbox[hidden] {
@@ -249,7 +250,8 @@ input {
     border: 1px solid var(--loader-panel-border);
     background: var(--loader-panel-bg);
     box-shadow: 0 26px 70px rgba(18, 52, 59, 0.14);
-    backdrop-filter: blur(16px);
+    backdrop-filter: blur(32px) saturate(200%);
+    -webkit-backdrop-filter: blur(32px) saturate(200%);
 }
 
 .loader-mark {
@@ -304,7 +306,8 @@ input {
     height: var(--nav-height);
     z-index: 1000;
     background: var(--navbar-bg);
-    backdrop-filter: blur(18px);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
     border-bottom: 1px solid transparent;
     transition: background 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
 }
@@ -2090,4 +2093,16 @@ html[data-theme="dark"] .post-subtoc-empty {
     .post-subtoc {
         padding: 22px 20px;
     }
+}
+
+.fade-up {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+}
+
+.fade-up.in-view {
+    opacity: 1;
+    transform: translateY(0);
 }

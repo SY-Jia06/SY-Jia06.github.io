@@ -287,6 +287,8 @@ function renderBlogList() {
     container.querySelectorAll("[data-id]").forEach((card) => {
         card.addEventListener("click", () => openPost(card.dataset.id));
     });
+
+    observePostCards();
 }
 
 function buildRandomPostHtml(posts) {
@@ -631,4 +633,22 @@ function finishSiteLoading() {
         loader.classList.add("is-hidden");
         document.body.classList.remove("loading");
     }, 420);
+}
+
+function observePostCards() {
+    const observer = new IntersectionObserver((entries, obs) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => {
+                    entry.target.classList.add("in-view");
+                }, index * 60);
+                obs.unobserve(entry.target);
+            }
+        });
+    }, { rootMargin: "0px 0px -40px 0px", threshold: 0.1 });
+
+    document.querySelectorAll('.post-card-link, .random-post-card').forEach(card => {
+        card.classList.add('fade-up');
+        observer.observe(card);
+    });
 }
