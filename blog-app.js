@@ -5,6 +5,7 @@ let currentArchive = "";
 let currentBrowserPanel = "";
 let lastListScrollY = 0;
 let activePostId = "";
+const OG_TITLE = document.title;
 
 const GISCUS_CONFIG = {
     repo: "SY-Jia06/SY-Jia06.github.io",
@@ -507,7 +508,7 @@ function closePostView({ skipHistory = false, restoreScrollY = 0 } = {}) {
     window.ImageLightbox?.unmount();
     window.ReadingEnhancements?.unmount();
     activePostId = "";
-    document.title = "SY-Jia06 / NOTES AND BUILDS";
+    document.title = OG_TITLE;
     const jsonLdScript = document.getElementById("jsonld-post");
     if (jsonLdScript) jsonLdScript.remove();
     clearComments();
