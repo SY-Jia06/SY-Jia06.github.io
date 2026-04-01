@@ -30,7 +30,7 @@ const {
     removeLeadingTitle
 } = window.ArticleMarkdown;
 
-document.body.classList.add("loading");
+
 
 document.addEventListener("DOMContentLoaded", () => {
     restoreFiltersFromUrl();
@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    finishSiteLoading();
+
 });
 
 function initFilters() {
@@ -682,15 +682,7 @@ function buildCurrentUrl(postId = "") {
     return `${window.location.pathname}${query ? `?${query}` : ""}`;
 }
 
-function finishSiteLoading() {
-    const loader = document.getElementById("siteLoader");
-    if (!loader) return;
 
-    window.setTimeout(() => {
-        loader.classList.add("is-hidden");
-        document.body.classList.remove("loading");
-    }, 420);
-}
 
 function observePostCards() {
     const observer = new IntersectionObserver((entries, obs) => {
