@@ -114,7 +114,9 @@
                 event.preventDefault();
                 const target = document.getElementById(link.dataset.tocId);
                 if (!target) return;
-                target.scrollIntoView({ behavior: "smooth", block: "start" });
+                const navHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue("--nav-height")) || 72;
+                const top = target.getBoundingClientRect().top + window.scrollY - navHeight - 24;
+                window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
             });
         });
     }
