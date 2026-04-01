@@ -266,6 +266,8 @@ function renderBlogList() {
         return;
     }
 
+    const randomPostHtml = buildRandomPostHtml(filteredPosts);
+
     container.innerHTML = filteredPosts
         .map((post) => `
             <article class="post-card-link" data-id="${post.id}">
@@ -274,9 +276,54 @@ function renderBlogList() {
         `)
         .join("");
 
+    if (randomPostHtml) {
+        container.insertAdjacentHTML("afterbegin", randomPostHtml);
+        const randomCard = container.querySelector("[data-random-id]");
+        if (randomCard) {
+            randomCard.addEventListener("click", () => openPost(randomCard.dataset.randomId));
+        }
+    }
+
     container.querySelectorAll("[data-id]").forEach((card) => {
         card.addEventListener("click", () => openPost(card.dataset.id));
     });
+}
+
+function buildRandomPostHtml(posts) {
+    if (posts.length < 2) return "";
+    const randomIndex = Math.floor(Math.random() * posts.length);
+    const post = posts[randomIndex];
+    const coverStyle = post.coverImage
+        ? ` style="--cover-image: url('${post.coverImage}');"`
+        : "";
+    const imageClass = post.coverImage ? " has-image" : "";
+    return `
+        <div class="random-post-card" data-random-id="${post.id}">
+            <div class="random-post-label">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                    <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                </svg>
+                随便看看
+            </div>
+            <article class="post-card">
+                <div class="post-card-cover tone-${post.coverTone || "teal"}${imageClass}"${coverStyle}>
+                    <span>${post.coverLabel || "POST"}</span>
+                    <span>${post.date.slice(5).replace("-", ".")}</span>
+                </div>
+                <div class="post-card-body">
+                    <div class="post-card-meta">
+                        <span>${formatDate(post.date)}</span>
+                        <a class="post-card-category is-link" href="${buildFilterUrl({ category: post.category })}">${post.category}</a>
+                    </div>
+                    <h3 class="post-card-title">${post.title}</h3>
+                    <p class="post-card-summary">${post.summary}</p>
+                    <div class="post-card-tags">${post.tags.map((tag) => `<a class="post-tag" href="${buildFilterUrl({ tag })}">${tag}</a>`).join("")}</div>
+                </div>
+            </article>
+        </div>
+    `;
 }
 
 function filterPosts() {

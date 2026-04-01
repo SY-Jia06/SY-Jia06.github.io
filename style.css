@@ -728,6 +728,61 @@ input {
     border-color: var(--line-strong);
 }
 
+.random-post-card {
+    cursor: pointer;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.random-post-card .post-card {
+    border-color: rgba(13, 114, 132, 0.35);
+    border-width: 2px;
+    background: linear-gradient(135deg, var(--bg-panel) 0%, rgba(13, 114, 132, 0.06%) 100%);
+}
+
+.random-post-card:hover .post-card {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: #0d7284;
+}
+
+.random-post-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    margin-bottom: 10px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #0d7284;
+    background: rgba(13, 114, 132, 0.1);
+    border: 1px solid rgba(13, 114, 132, 0.25);
+    border-radius: 20px;
+}
+
+.random-post-label svg {
+    opacity: 0.8;
+}
+
+/* Dark mode overrides */
+html[data-theme="dark"] .random-post-card .post-card {
+    border-color: rgba(88, 196, 213, 0.3);
+    background: linear-gradient(135deg, var(--bg-panel) 0%, rgba(88, 196, 213, 0.06) 100%);
+}
+
+html[data-theme="dark"] .random-post-card:hover .post-card {
+    border-color: #58c4d5;
+}
+
+html[data-theme="dark"] .random-post-label {
+    color: #58c4d5;
+    background: rgba(88, 196, 213, 0.1);
+    border-color: rgba(88, 196, 213, 0.25);
+}
+
 .post-card {
     display: grid;
     grid-template-columns: 148px minmax(0, 1fr);
