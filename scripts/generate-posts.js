@@ -2,6 +2,7 @@
 
 const fs = require("fs");
 const path = require("path");
+const crypto = require("crypto");
 
 const BLOG_ROOT = path.resolve(__dirname, "..");
 const POSTS_ROOT = path.join(BLOG_ROOT, "posts");
@@ -11,6 +12,7 @@ const SITEMAP_OUTPUT = path.join(BLOG_ROOT, "sitemap.xml");
 
 const SITE_URL = "https://sy-jia06.github.io";
 const COVER_TONES = ["teal", "amber", "slate"];
+const HTML_FILES = ["index.html", "blog.html", "about.html"].map(f => path.join(BLOG_ROOT, f));
 
 main();
 
@@ -23,9 +25,28 @@ function main() {
     fs.writeFileSync(SEARCH_OUTPUT, JSON.stringify(buildSearchIndex(posts), null, 2), "utf8");
     fs.writeFileSync(SITEMAP_OUTPUT, buildSitemap(posts), "utf8");
 
+    const stamp = stampHtmlFiles();
+
     console.log(`Generated ${path.relative(process.cwd(), POSTS_OUTPUT)} with ${posts.length} posts.`);
     console.log(`Generated ${path.relative(process.cwd(), SEARCH_OUTPUT)}.`);
     console.log(`Generated ${path.relative(process.cwd(), SITEMAP_OUTPUT)}.`);
+    console.log(`Cache-bust stamp: ${stamp} → updated ${HTML_FILES.map(f => path.basename(f)).join(", ")}.`);
+}
+
+function stampHtmlFiles() {
+    const hash = crypto.createHash("md5").update(String(Date.now())).digest("hex").slice(0, 8);
+    const versionRegex = /\?v=[a-zA-Z0-9]+/g;
+
+    for (const filePath of HTML_FILES) {
+        if (!fs.existsSync(filePath)) continue;
+        const content = fs.readFileSync(filePath, "utf8");
+        const updated = content.replace(versionRegex, `?v=${hash}`);
+        if (updated !== content) {
+            fs.writeFileSync(filePath, updated, "utf8");
+        }
+    }
+
+    return hash;
 }
 
 function walkMarkdownFiles(dirPath) {
