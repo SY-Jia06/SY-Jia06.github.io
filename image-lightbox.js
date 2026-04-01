@@ -11,7 +11,7 @@
         const captionAttr = caption ? ` data-lightbox-caption="${escapeHtml(caption)}"` : "";
         return `
             <button type="button" class="post-image-trigger" data-lightbox-src="${src}" data-lightbox-alt="${escapeHtml(alt)}"${captionAttr}>
-                <img src="${src}" alt="${escapeHtml(alt)}"${titleAttr}>
+                <img src="${src}" alt="${escapeHtml(alt)}"${titleAttr} loading="lazy" decoding="async">
             </button>
         `;
     }

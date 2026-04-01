@@ -5,6 +5,7 @@ let currentArchive = "";
 let currentBrowserPanel = "";
 let lastListScrollY = 0;
 let activePostId = "";
+const OG_TITLE = document.title;
 
 const GISCUS_CONFIG = {
     repo: "SY-Jia06/SY-Jia06.github.io",
@@ -287,6 +288,8 @@ function renderBlogList() {
     container.querySelectorAll("[data-id]").forEach((card) => {
         card.addEventListener("click", () => openPost(card.dataset.id));
     });
+
+    observePostCards();
 }
 
 function buildRandomPostHtml(posts) {
@@ -377,6 +380,26 @@ async function openPostInternal(postId, { skipHistory = false } = {}) {
     }
 
     postHeroTitle.textContent = post.title;
+    document.title = `${post.title} - SY-Jia06`;
+
+    let jsonLdScript = document.getElementById("jsonld-post");
+    if (!jsonLdScript) {
+        jsonLdScript = document.createElement("script");
+        jsonLdScript.id = "jsonld-post";
+        jsonLdScript.type = "application/ld+json";
+        document.head.appendChild(jsonLdScript);
+    }
+    jsonLdScript.textContent = JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": post.title,
+        "datePublished": post.date,
+        "description": post.summary,
+        "author": {
+            "@type": "Person",
+            "name": "SY-Jia06"
+        }
+    });
     postMetaHead.innerHTML = `
         <span>${formatDate(post.date)}</span>
         <a class="post-card-category is-link" href="${buildFilterUrl({ category: post.category })}">${post.category}</a>
@@ -485,6 +508,9 @@ function closePostView({ skipHistory = false, restoreScrollY = 0 } = {}) {
     window.ImageLightbox?.unmount();
     window.ReadingEnhancements?.unmount();
     activePostId = "";
+    document.title = OG_TITLE;
+    const jsonLdScript = document.getElementById("jsonld-post");
+    if (jsonLdScript) jsonLdScript.remove();
     clearComments();
 
     if (!skipHistory) {
@@ -631,4 +657,22 @@ function finishSiteLoading() {
         loader.classList.add("is-hidden");
         document.body.classList.remove("loading");
     }, 420);
+}
+
+function observePostCards() {
+    const observer = new IntersectionObserver((entries, obs) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => {
+                    entry.target.classList.add("in-view");
+                }, index * 60);
+                obs.unobserve(entry.target);
+            }
+        });
+    }, { rootMargin: "0px 0px -40px 0px", threshold: 0.1 });
+
+    document.querySelectorAll('.post-card-link, .random-post-card').forEach(card => {
+        card.classList.add('fade-up');
+        observer.observe(card);
+    });
 }
