@@ -489,8 +489,15 @@ input {
 }
 
 .compact-banner .banner-inner {
-    padding-top: 28px;
-    padding-bottom: 26px;
+    padding-top: 32px;
+    padding-bottom: 36px;
+}
+
+.banner-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
 }
 
 .compact-banner .banner-title {

@@ -109,6 +109,7 @@
     /* ─── 4. Banner Entry Animation ─── */
 
     function initBannerEntry() {
+        const toolbar = document.querySelector(".banner-toolbar");
         const kicker = document.querySelector(".banner-kicker");
         const title = document.querySelector(".banner-title");
         const subtitle = document.querySelector(".banner-subtitle");
@@ -116,8 +117,11 @@
 
         const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
+        if (toolbar && toolbar.children.length) {
+            tl.from(toolbar.children, { y: 15, opacity: 0, duration: 0.4, stagger: 0.06 });
+        }
         if (kicker) {
-            tl.from(kicker, { y: 20, opacity: 0, duration: 0.6 });
+            tl.from(kicker, { y: 20, opacity: 0, duration: 0.6 }, "-=0.2");
         }
         if (title) {
             tl.from(title, { y: 30, opacity: 0, duration: 0.7 }, "-=0.3");
@@ -128,6 +132,21 @@
         if (actions) {
             tl.from(actions, { y: 15, opacity: 0, duration: 0.5 }, "-=0.25");
         }
+    }
+
+    /* ─── 6. Blog List Cards Stagger Reveal ─── */
+
+    function initBlogListReveal() {
+        const blogList = document.getElementById("blogList");
+        if (!blogList || !blogList.children.length) return;
+
+        gsap.from(blogList.children, {
+            y: 50,
+            opacity: 0,
+            duration: 0.6,
+            ease: "power2.out",
+            stagger: 0.08
+        });
     }
 
     /* ─── 5. Section Panels Reveal on Scroll ─── */
@@ -160,11 +179,17 @@
         initPanelReveal();
 
         // Cards need to wait for dynamic rendering
-        setTimeout(initCardTilt, 600);
+        setTimeout(() => {
+            initCardTilt();
+            initBlogListReveal();
+        }, 600);
 
-        // Re-init card tilt when blog list re-renders
+        // Re-init card tilt + reveal when blog list re-renders
         const observer = new MutationObserver(() => {
-            setTimeout(initCardTilt, 100);
+            setTimeout(() => {
+                initCardTilt();
+                initBlogListReveal();
+            }, 100);
         });
         const blogList = document.getElementById("blogList");
         if (blogList) {
