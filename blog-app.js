@@ -379,6 +379,26 @@ async function openPostInternal(postId, { skipHistory = false } = {}) {
     }
 
     postHeroTitle.textContent = post.title;
+    document.title = `${post.title} - SY-Jia06`;
+
+    let jsonLdScript = document.getElementById("jsonld-post");
+    if (!jsonLdScript) {
+        jsonLdScript = document.createElement("script");
+        jsonLdScript.id = "jsonld-post";
+        jsonLdScript.type = "application/ld+json";
+        document.head.appendChild(jsonLdScript);
+    }
+    jsonLdScript.textContent = JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": post.title,
+        "datePublished": post.date,
+        "description": post.summary,
+        "author": {
+            "@type": "Person",
+            "name": "SY-Jia06"
+        }
+    });
     postMetaHead.innerHTML = `
         <span>${formatDate(post.date)}</span>
         <a class="post-card-category is-link" href="${buildFilterUrl({ category: post.category })}">${post.category}</a>
@@ -487,6 +507,9 @@ function closePostView({ skipHistory = false, restoreScrollY = 0 } = {}) {
     window.ImageLightbox?.unmount();
     window.ReadingEnhancements?.unmount();
     activePostId = "";
+    document.title = "SY-Jia06 / NOTES AND BUILDS";
+    const jsonLdScript = document.getElementById("jsonld-post");
+    if (jsonLdScript) jsonLdScript.remove();
     clearComments();
 
     if (!skipHistory) {

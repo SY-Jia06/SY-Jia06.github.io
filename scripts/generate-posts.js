@@ -7,7 +7,9 @@ const BLOG_ROOT = path.resolve(__dirname, "..");
 const POSTS_ROOT = path.join(BLOG_ROOT, "posts");
 const POSTS_OUTPUT = path.join(BLOG_ROOT, "posts.js");
 const SEARCH_OUTPUT = path.join(BLOG_ROOT, "search.json");
+const SITEMAP_OUTPUT = path.join(BLOG_ROOT, "sitemap.xml");
 
+const SITE_URL = "https://sy-jia06.github.io";
 const COVER_TONES = ["teal", "amber", "slate"];
 
 main();
@@ -19,9 +21,11 @@ function main() {
 
     fs.writeFileSync(POSTS_OUTPUT, buildPostsModule(posts), "utf8");
     fs.writeFileSync(SEARCH_OUTPUT, JSON.stringify(buildSearchIndex(posts), null, 2), "utf8");
+    fs.writeFileSync(SITEMAP_OUTPUT, buildSitemap(posts), "utf8");
 
     console.log(`Generated ${path.relative(process.cwd(), POSTS_OUTPUT)} with ${posts.length} posts.`);
     console.log(`Generated ${path.relative(process.cwd(), SEARCH_OUTPUT)}.`);
+    console.log(`Generated ${path.relative(process.cwd(), SITEMAP_OUTPUT)}.`);
 }
 
 function walkMarkdownFiles(dirPath) {
@@ -282,4 +286,30 @@ function buildSearchIndex(posts) {
             content: stripMarkdown(body).replace(/\s+/g, " ").trim()
         };
     });
+}
+
+function buildSitemap(posts) {
+    const urls = posts.map(post => {
+        return `  <url>
+    <loc>${SITE_URL}/blog.html?post=${post.id}</loc>
+    <lastmod>${post.date}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>`;
+    });
+
+    return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>${SITE_URL}/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>${SITE_URL}/blog.html</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+${urls.join("\n")}
+</urlset>`;
 }
