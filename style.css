@@ -1536,25 +1536,31 @@ a.about-contact-item:hover .contact-text {
 }
 
 .back-btn {
-    position: fixed;
-    top: calc(var(--nav-height) + 16px);
-    left: 18px;
-    z-index: 40;
+    margin-bottom: 18px;
     padding: 8px 16px;
     border: 1px solid var(--line-soft);
     border-radius: 999px;
     background: var(--button-soft-bg);
     color: var(--button-soft-text);
     cursor: pointer;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.12);
-    backdrop-filter: blur(8px);
     font-size: 0.85rem;
     transition: opacity 0.2s, transform 0.2s;
 }
 
 .back-btn:hover {
     transform: scale(1.04);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+}
+
+@media (max-width: 980px) {
+    .back-btn {
+        position: fixed;
+        top: calc(var(--nav-height) + 6px);
+        left: 8px;
+        z-index: 40;
+        margin: 0;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+        backdrop-filter: blur(8px);
+    }
 }
 
 .post-hero {
