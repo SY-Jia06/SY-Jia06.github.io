@@ -19,7 +19,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=c3c51f5a">
+    <link rel="stylesheet" href="style.css?v=fixed-avatar">
 </head>
 
 <body>
@@ -65,7 +65,7 @@
                 <div class="about-profile-layout">
                     <aside class="about-sidebar">
                         <div class="about-avatar-ring">
-                            <div class="about-avatar-core">SY/J</div>
+                            <img src="assets/avatar.jpg" alt="SY-Jia06" class="about-avatar-img">
                         </div>
                         <h1 class="about-name">SY-Jia06</h1>
                         <p class="about-handle">audio curious · backend learner</p>
@@ -111,12 +111,11 @@
                     </aside>
 
                     <section class="about-main">
-                        <p class="about-file-label">关于我</p>
                         <blockquote class="about-quote">
                             Hi, 我是 J.
                         </blockquote>
                         <div class="about-copy">
-                            <p>Hi，我是 J，吉林大学大二 CS 在读。</p>
+                            <p>吉林大学大二 CS 在读。</p>
                             <p>我喜欢向内探索，关于人，关于存在；也喜欢向外挖掘，关于技术，关于那些还没被解决的问题。</p>
                             <p>Current focus：🎧 Audio ML + 🛠️ Backend。跟进 AI 前沿，日常在 Codex 和 Notion 里度过。</p>
                             <p>我是存在主义者，<em>existence is something I build deliberately</em>。也带着人本主义跟人打交道。</p>
@@ -125,38 +124,59 @@
 
                         <div class="about-section-block">
                             <h2>All the way here</h2>
-                            <div class="route-map">
-                                <div class="route-line"></div>
-                                <article class="route-stop">
-                                    <span class="route-time">大一上 - 大一下</span>
-                                    <h3>算法竞赛</h3>
-                                    <div class="route-tags">
-                                        <span>算法比赛</span>
+                            <div class="git-tree">
+                                <div class="g-node">
+                                    <div class="g-line"></div>
+                                    <div class="g-dot"></div>
+                                    <div class="g-content">
+                                        <div class="g-time">大一上 - 大一下</div>
+                                        <h3 class="g-title">算法竞赛</h3>
+                                        <div class="route-tags"><span>算法比赛</span></div>
                                     </div>
-                                </article>
-                                <article class="route-stop">
-                                    <span class="route-time">大一下暑假</span>
-                                    <h3>进入课题组</h3>
-                                    <div class="route-tags">
-                                        <span>AI4S</span>
+                                </div>
+                                <div class="g-node">
+                                    <div class="g-line"></div>
+                                    <div class="g-dot"></div>
+                                    <div class="g-content">
+                                        <div class="g-time">大一下暑假 - 大二上</div>
+                                        <h3 class="g-title">进入 AI4S 课题组</h3>
+                                        <div class="route-tags"><span>AI4S</span></div>
                                     </div>
-                                </article>
-                                <article class="route-stop">
-                                    <span class="route-time">大二上</span>
-                                    <h3>继续做科研</h3>
-                                    <div class="route-tags">
-                                        <span>AI4S</span>
+                                </div>
+                                <div class="g-node">
+                                    <div class="g-line"></div>
+                                    <div class="g-dot"></div>
+                                    <div class="g-content">
+                                        <div class="g-time">2026.02 - Present</div>
+                                        <h3 class="g-title">双线并行</h3>
                                     </div>
-                                </article>
-                                <article class="route-stop route-stop-active">
-                                    <span class="route-time">2026 年 2 月之后</span>
-                                    <h3>音频 + 后端并行</h3>
-                                    <div class="route-tags">
-                                        <span>🎧 Audio</span>
-                                        <span>⚙️ Backend</span>
-                                        <span>MHD 频谱图</span>
+                                </div>
+                                <div class="g-branch">
+                                    <div class="g-branch-line"></div>
+                                    <div class="g-node" style="padding-bottom: 24px;">
+                                        <div class="g-line"></div>
+                                        <div class="g-dot" style="border-color: #0ea5e9;"></div>
+                                        <div class="g-content">
+                                            <div class="g-time" style="color: #0ea5e9;">Ongoing / Track A</div>
+                                            <h3 class="g-title">Audio</h3>
+                                            <p style="margin: 8px 0 0; color: var(--text-body); font-size: 0.95rem;">深入音频模型结构与 MHD 频谱。</p>
+                                            <div class="route-tags"><span>🎧 Audio</span><span>MHD</span></div>
+                                        </div>
                                     </div>
-                                </article>
+                                </div>
+                                <div class="g-branch">
+                                    <div class="g-branch-line"></div>
+                                    <div class="g-node" style="padding-bottom: 0;">
+                                        <div class="g-line g-line-last"></div>
+                                        <div class="g-dot" style="border-color: #10b981;"></div>
+                                        <div class="g-content">
+                                            <div class="g-time" style="color: #10b981;">Ongoing / Track B</div>
+                                            <h3 class="g-title">Backend</h3>
+                                            <p style="margin: 8px 0 0; color: var(--text-body); font-size: 0.95rem;">工程能力构建，探索 Java 及其后端生态。</p>
+                                            <div class="route-tags"><span>⚙️ Java Backend</span><span>System Design</span></div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </section>
