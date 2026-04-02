@@ -12,10 +12,33 @@ const {
 document.addEventListener("DOMContentLoaded", () => {
     initNavigation();
     initScrollEffects();
+    initBannerToggle();
     renderHomePage();
     restorePageFromHash();
     finishSiteLoading();
 });
+
+function initBannerToggle() {
+    const banner = document.querySelector(".home-banner");
+    if (!banner) return;
+    
+    const backgrounds = [
+        "assets/banner.png",
+        "assets/home-bg.png"
+    ];
+    
+    let currentIndex = Math.random() > 0.5 ? 0 : 1;
+    banner.style.backgroundImage = `url("${backgrounds[currentIndex]}")`;
+    banner.style.cursor = "pointer";
+    
+    banner.addEventListener("click", (e) => {
+        // Prevent toggle if clicking on buttons or links inside the banner
+        if (e.target.closest('button, a')) return;
+        
+        currentIndex = (currentIndex + 1) % backgrounds.length;
+        banner.style.backgroundImage = `url("${backgrounds[currentIndex]}")`;
+    });
+}
 
 function initNavigation() {
     const navLinks = document.querySelectorAll("[data-page]");
