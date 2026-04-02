@@ -1709,15 +1709,15 @@ a.about-contact-item:hover .contact-text {
 
 .post-toc {
     padding: 14px 16px;
-    border: 1px solid rgba(22, 48, 56, 0.1);
+    border: 1px solid var(--line-strong);
     border-radius: 22px;
-    background: rgba(248, 250, 246, 0.86);
-    box-shadow: none;
+    background: var(--bg-panel);
+    box-shadow: 0 4px 12px rgba(18, 52, 59, 0.05);
 }
 
 .post-toc-label {
     margin-bottom: 10px;
-    color: rgba(22, 48, 56, 0.5);
+    color: rgba(22, 48, 56, 0.8);
     font-size: 0.74rem;
     font-weight: 700;
     letter-spacing: 0.16em;
@@ -1731,7 +1731,7 @@ a.about-contact-item:hover .contact-text {
 }
 
 .post-toc-link {
-    color: rgba(22, 48, 56, 0.78);
+    color: rgba(22, 48, 56, 0.88);
     text-decoration: none;
     line-height: 1.4;
     font-size: 0.88rem;
@@ -1740,7 +1740,7 @@ a.about-contact-item:hover .contact-text {
 .post-toc-link.level-3 {
     padding-left: 12px;
     font-size: 0.84rem;
-    color: rgba(22, 48, 56, 0.56);
+    color: rgba(22, 48, 56, 0.72);
 }
 
 .post-toc-link.active {
@@ -1750,7 +1750,7 @@ a.about-contact-item:hover .contact-text {
 
 .post-side-label {
     margin-bottom: 10px;
-    color: rgba(22, 48, 56, 0.5);
+    color: rgba(22, 48, 56, 0.8);
     font-size: 0.74rem;
     font-weight: 700;
     letter-spacing: 0.16em;
@@ -1759,10 +1759,10 @@ a.about-contact-item:hover .contact-text {
 
 .post-subtoc {
     padding: 14px 16px;
-    border: 1px solid rgba(22, 48, 56, 0.1);
+    border: 1px solid var(--line-strong);
     border-radius: 22px;
-    background: rgba(248, 250, 246, 0.86);
-    box-shadow: none;
+    background: var(--bg-panel);
+    box-shadow: 0 4px 12px rgba(18, 52, 59, 0.05);
 }
 
 .post-subtoc-list {
@@ -1772,7 +1772,7 @@ a.about-contact-item:hover .contact-text {
 }
 
 .post-subtoc-link {
-    color: rgba(22, 48, 56, 0.78);
+    color: rgba(22, 48, 56, 0.88);
     text-decoration: none;
     line-height: 1.4;
     font-size: 0.86rem;
@@ -1785,7 +1785,7 @@ a.about-contact-item:hover .contact-text {
 
 .post-subtoc-empty {
     margin: 0;
-    color: rgba(22, 48, 56, 0.52);
+    color: rgba(22, 48, 56, 0.72);
     line-height: 1.6;
     font-size: 0.84rem;
 }
