@@ -1251,81 +1251,114 @@ a.about-contact-item:hover .contact-text {
     font-size: 1.45rem;
 }
 
-.route-map {
-    position: relative;
-    display: grid;
-    gap: 16px;
-    padding-left: 22px;
+.git-tree {
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
 }
 
-.route-line {
+.g-node {
+    position: relative;
+    padding-left: 36px;
+    padding-bottom: 24px;
+}
+
+.g-line {
     position: absolute;
-    top: 10px;
-    bottom: 10px;
+    top: 24px;
+    bottom: 0;
     left: 6px;
     width: 2px;
-    background: linear-gradient(180deg, rgba(13, 114, 132, 0.72), rgba(217, 154, 61, 0.42));
+    background: var(--line-soft);
 }
 
-.route-stop {
-    position: relative;
-    padding: 12px 14px 12px 14px;
-    border: 1px solid var(--line-soft);
-    border-radius: 18px;
-    background: rgba(18, 52, 59, 0.04);
+.g-line-last {
+    display: none;
 }
 
-.route-stop::before {
-    content: "";
+.g-dot {
     position: absolute;
-    top: 22px;
-    left: -22px;
-    width: 12px;
-    height: 12px;
+    top: 6px;
+    left: -1px;
+    width: 16px;
+    height: 16px;
     border-radius: 50%;
-    background: var(--accent);
-    box-shadow: 0 0 0 4px rgba(13, 114, 132, 0.12);
+    background: var(--panel-bg);
+    border: 3px solid var(--accent);
+    box-shadow: 0 0 0 4px var(--bg-body);
+    z-index: 2;
 }
 
-.route-stop-active {
-    background: linear-gradient(135deg, rgba(13, 114, 132, 0.08), rgba(255, 255, 255, 0));
-    border-color: rgba(13, 114, 132, 0.22);
+.g-content {
+    background: var(--panel-bg);
+    border: 1px solid var(--line-soft);
+    border-radius: 12px;
+    padding: 16px 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.02);
 }
 
-.route-time {
+.g-time {
     display: inline-block;
-    margin-bottom: 6px;
-    color: var(--accent);
-    font-family: var(--font-mono);
     font-size: 0.8rem;
-    letter-spacing: 0.08em;
+    font-family: var(--font-mono);
+    color: var(--accent);
+    font-weight: 500;
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
     text-transform: uppercase;
 }
 
-.route-stop h3 {
-    margin: 0 0 6px;
+.g-title {
+    margin: 0;
+    font-size: 1.15rem;
     color: var(--text-strong);
-    font-size: 1rem;
 }
 
-.route-tags {
+.g-branch {
+    position: relative;
+    padding-left: 32px;
+}
+
+.g-branch::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 6px;
+    width: 2px;
+    background: var(--line-soft);
+}
+
+.g-branch:last-child::before {
+    display: none;
+}
+
+.g-branch-line {
+    position: absolute;
+    top: 0;
+    left: 6px;
+    width: 26px;
+    height: 15px;
+    border-bottom: 2px solid var(--line-soft);
+    border-left: 2px solid var(--line-soft);
+    border-bottom-left-radius: 12px;
+    box-sizing: border-box;
+}
+
+.g-content .route-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
-    margin-top: 6px;
+    margin-top: 10px;
 }
 
-.route-tags span,
-.about-bullet-list li {
-    color: var(--text-body);
-}
-
-.route-tags span {
+.g-content .route-tags span {
     padding: 5px 10px;
     border-radius: 999px;
     background: var(--bg-soft);
     border: 1px solid rgba(18, 52, 59, 0.08);
     font-size: 0.8rem;
+    color: var(--text-body);
 }
 
 .about-bullet-list {
