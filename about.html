@@ -58,15 +58,22 @@
         </div>
     </div>
 
+    <div class="image-lightbox" id="imageLightbox" hidden>
+        <div class="image-lightbox-stage">
+            <img id="imageLightboxImg" src="" alt="">
+            <p class="image-lightbox-caption" id="imageLightboxCaption"></p>
+        </div>
+    </div>
+
     <main>
         <div class="subpage-shell">
             <div class="about-profile-card">
                 <div class="about-cover"></div>
                 <div class="about-profile-layout">
                     <aside class="about-sidebar">
-                        <div class="about-avatar-ring">
+                        <button class="about-avatar-ring post-image-trigger" data-lightbox-src="assets/avatar.jpg" data-lightbox-alt="SY-Jia06" style="cursor: zoom-in; border: none; outline: none; padding: 6px; appearance: none;">
                             <img src="assets/avatar.jpg" alt="SY-Jia06" class="about-avatar-img">
-                        </div>
+                        </button>
                         <h1 class="about-name">SY-Jia06</h1>
                         <p class="about-handle">audio curious · backend learner</p>
                         <div class="about-contact-list">
@@ -190,6 +197,7 @@
     </footer>
 
     <script src="shared.js?v=c3c51f5a" defer></script>
+    <script src="image-lightbox.js?v=fixed-avatar" defer></script>
     <script src="simple-page.js?v=c3c51f5a" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js" defer></script>
