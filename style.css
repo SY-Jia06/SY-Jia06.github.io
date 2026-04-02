@@ -532,7 +532,7 @@ input {
 .blog-page-grid.reading-mode {
     grid-template-columns: minmax(0, 1fr);
     max-width: 1240px;
-    padding-top: calc(var(--nav-height) + 18px);
+    padding-top: var(--nav-height);
 }
 
 .blog-page-grid .content-column {
@@ -1528,13 +1528,25 @@ a.about-contact-item:hover .contact-text {
 }
 
 .back-btn {
-    margin-bottom: 18px;
-    padding: 10px 16px;
+    position: fixed;
+    top: calc(var(--nav-height) + 16px);
+    left: 18px;
+    z-index: 40;
+    padding: 8px 16px;
     border: 1px solid var(--line-soft);
     border-radius: 999px;
     background: var(--button-soft-bg);
     color: var(--button-soft-text);
     cursor: pointer;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+    backdrop-filter: blur(8px);
+    font-size: 0.85rem;
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.back-btn:hover {
+    transform: scale(1.04);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.18);
 }
 
 .post-hero {
