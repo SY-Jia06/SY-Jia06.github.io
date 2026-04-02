@@ -535,6 +535,14 @@ input {
     padding-top: var(--nav-height);
 }
 
+.blog-page-grid.reading-mode ~ *,
+.board-shell-blog:has(.reading-mode) {
+    padding-top: 0;
+    padding-left: 0;
+    padding-right: 0;
+    max-width: none;
+}
+
 .blog-page-grid .content-column {
     max-width: 920px;
     width: 100%;
