@@ -1,4 +1,4 @@
-document.body.classList.add("loading");
+
 
 const {
     initMobileNav,
@@ -168,12 +168,4 @@ function buildPostCard(post, linkToPage = false) {
     return card;
 }
 
-function finishSiteLoading() {
-    const loader = document.getElementById("siteLoader");
-    if (!loader) return;
 
-    window.setTimeout(() => {
-        loader.classList.add("is-hidden");
-        document.body.classList.remove("loading");
-    }, 420);
-}
