@@ -1147,14 +1147,21 @@ html[data-theme="dark"] .project-tags span {
     box-shadow: 0 14px 36px rgba(18, 52, 59, 0.22);
 }
 
-.about-avatar-img {
+.about-avatar-ring .post-image-trigger {
+    margin: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    border-radius: 50%;
-    border: 3px solid var(--bg-panel);
-    background: var(--bg-panel);
-    display: block;
+}
+
+.about-avatar-img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    border-radius: 50% !important;
+    border: 3px solid var(--bg-panel) !important;
+    background: var(--bg-panel) !important;
+    display: block !important;
+    margin: 0 !important;
 }
 
 .about-name {
