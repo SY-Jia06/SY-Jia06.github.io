@@ -4,6 +4,12 @@
 
 目标不是写成长文，而是降低之后继续修改时的认知负债。
 
+## 0. About 页面头像样式锁定 (不要再改了)
+
+### 设置约束
+- **头像展示结构**: 必须使用 `<button class="post-image-trigger">` 加上内嵌 `<img class="about-avatar-img">`，并用 `style="all: unset;"` 抹平默认样式。这样既能点击启动 Lightbox 放大，又不会破坏遮罩。
+- **强制圆角**: 因为 `.post-image-trigger img` 会引发 CSS Specificity 问题（它默认有 16px 圆角规则），所以 `.about-avatar-img` 必须使用 `!important` 强制赋予 `border-radius: 50% !important;` 以及 `margin: 0 !important;`，否则会出现白色直角溢出。
+
 ## 1. 文章直达链接不要优先用 `#hash`
 
 ### 现象
