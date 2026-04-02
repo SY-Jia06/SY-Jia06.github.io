@@ -1554,8 +1554,8 @@ a.about-contact-item:hover .contact-text {
 @media (max-width: 980px) {
     .back-btn {
         position: fixed;
-        top: calc(var(--nav-height) + 6px);
-        left: 8px;
+        top: calc(var(--nav-height) + 2px);
+        left: 4px;
         z-index: 40;
         margin: 0;
         box-shadow: 0 2px 12px rgba(0,0,0,0.15);
@@ -1981,14 +1981,15 @@ html[data-theme="dark"] .post-subtoc-empty {
     }
 
     .article-side-left {
-        order: 1;
-        position: static;
-        max-height: none;
-        overflow: visible;
+        display: none;
     }
 
     .article-side-right {
         display: none;
+    }
+
+    .article-layout-reading {
+        gap: 0;
     }
 }
 
