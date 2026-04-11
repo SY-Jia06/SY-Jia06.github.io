@@ -211,6 +211,20 @@
             ease: "power2.out",
             delay: 0.1
         });
+
+        // bfcache fix: reset GSAP inline styles before page is stored in bfcache,
+        // so when browser restores the page it doesn't have opacity:0 stuck on it
+        window.addEventListener("pagehide", () => {
+            gsap.set("main, .banner-shell", { clearProps: "all" });
+        });
+
+        // bfcache fix: also handle restoration — play a soft entry animation
+        window.addEventListener("pageshow", (event) => {
+            if (event.persisted) {
+                gsap.set("main, .banner-shell", { clearProps: "all" });
+                gsap.from("main", { opacity: 0, duration: 0.3, ease: "power2.out" });
+            }
+        });
     }
 
     /* ─── Boot ─── */

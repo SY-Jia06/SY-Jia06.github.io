@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SY-Jia06 的项目经历，包括 AI4S 单细胞科研、Java 后端开发等。">
+    <title>项目 | SY-Jia06</title>
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="项目 | SY-Jia06">
+    <meta property="og:description" content="SY-Jia06 的项目经历，包括 AI4S 单细胞科研、Java 后端开发等。">
+    <meta property="og:type" content="profile">
+    <meta property="og:url" content="https://sy-jia06.github.io/projects.html">
+    <meta property="og:image" content="https://sy-jia06.github.io/assets/avatar.jpg">
+    <meta property="og:site_name" content="SY-Jia06">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="项目 | SY-Jia06">
+    <meta name="twitter:description" content="SY-Jia06 的项目经历，包括 AI4S 单细胞科研、Java 后端开发等。">
+    <meta name="twitter:image" content="https://sy-jia06.github.io/assets/avatar.jpg">
+
+    <link rel="canonical" href="https://sy-jia06.github.io/projects.html">
+    <link rel="icon" href="assets/avatar.jpg" type="image/jpeg">
+
+    <script src="theme.js?v=c3c51f5a"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"></noscript>
+    <link rel="stylesheet" href="style.css?v=c3c51f5a">
+</head>
+
+<body>
+
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">SY/J</a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">首页</a>
+                <a href="blog.html" class="nav-link">博客</a>
+                <a href="projects.html" class="nav-link active">项目</a>
+                <a href="about.html" class="nav-link">关于</a>
+                <div class="theme-switcher" aria-label="Theme switcher">
+                    <button type="button" class="theme-btn" data-theme-mode="light">浅</button>
+                    <button type="button" class="theme-btn" data-theme-mode="dark">深</button>
+                    <button type="button" class="theme-btn" data-theme-mode="system">随</button>
+                </div>
+                <a href="https://github.com/SY-Jia06" target="_blank" rel="noreferrer" class="nav-link">GitHub</a>
+            </div>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html" class="mobile-link">首页</a>
+        <a href="blog.html" class="mobile-link">博客</a>
+        <a href="projects.html" class="mobile-link active">项目</a>
+        <a href="about.html" class="mobile-link">关于</a>
+        <div class="theme-switcher theme-switcher-mobile" aria-label="Theme switcher">
+            <button type="button" class="theme-btn" data-theme-mode="light">浅色</button>
+            <button type="button" class="theme-btn" data-theme-mode="dark">深色</button>
+            <button type="button" class="theme-btn" data-theme-mode="system">系统</button>
+        </div>
+    </div>
+
+    <main>
+        <div class="subpage-shell">
+            <div class="subpage-header">
+                <span class="section-eyebrow">Projects</span>
+                <h1>我的项目经历</h1>
+            </div>
+            <div class="project-showcase">
+                <article class="project-card featured">
+                    <p class="project-label">2025.8 - 2025.12</p>
+                    <div class="project-heading-row">
+                        <h2>Virtual Cell Challenge：单细胞微扰预测研究</h2>
+                        <span class="project-role">科研合作</span>
+                    </div>
+                    <ul class="project-detail-list">
+                        <li>和师姐一起推进单细胞微扰预测课题，主要负责模型复现、训练实现和实验流程落地，也会围绕局部问题做一些探索性尝试。</li>
+                        <li>复现基于 Transformer 的 StateTransition 与基于 Flow Matching 的 PerturbNet，搭建数据处理、训练和评估链路。</li>
+                        <li>针对生物学指标不可导的问题，引入 GRPO 做奖励优化，结合 cell-eval 指标观察到 PDS 明显提升、DES 稳步改善。</li>
+                    </ul>
+                    <div class="project-tags">
+                        <span>PyTorch</span>
+                        <span>Flow Matching</span>
+                        <span>GRPO</span>
+                        <span>Transformer</span>
+                        <span>RL</span>
+                        <span>Single-cell</span>
+                    </div>
+                </article>
+                <article class="project-card">
+                    <p class="project-label">2026.2 - 至今</p>
+                    <div class="project-heading-row">
+                        <h2>食速达：外卖订餐管理系统</h2>
+                        <span class="project-role">后端开发</span>
+                    </div>
+                    <ul class="project-detail-list">
+                        <li>基于 Spring Boot + MyBatis 实现菜品、套餐、订单等模块的三层架构开发，使用 Swagger 生成接口文档。</li>
+                        <li>集成 Redis + Spring Cache 缓存高频查询数据，并通过 AOP 自动填充公共字段，减少重复代码。</li>
+                        <li>基于 WebSocket 实现订单状态实时推送，对接微信小程序登录流程。</li>
+                    </ul>
+                    <div class="project-tags">
+                        <span>Spring Boot</span>
+                        <span>MyBatis</span>
+                        <span>Redis</span>
+                        <span>WebSocket</span>
+                        <span>Swagger</span>
+                    </div>
+                </article>
+                <article class="project-card">
+                    <p class="project-label">后续计划</p>
+                    <div class="project-heading-row">
+                        <h2>印迹：笔记发布与审核系统</h2>
+                        <span class="project-role">后端开发</span>
+                    </div>
+                    <ul class="project-detail-list">
+                        <li>基于 Spring Boot 微服务实现笔记发布核心链路，设计"创建 → 审核 → 分发 → 可见"状态机，引入 TraceId 做全链路追踪。</li>
+                        <li>引入内容版本号机制，严格区分草稿态、审核态和线上态，避免未审核内容误曝光。</li>
+                        <li>计划结合 Redis + MQ 实现异步审核流与状态同步，支撑问题秒级定位和模块化扩展。</li>
+                    </ul>
+                    <div class="project-tags">
+                        <span>Spring Boot</span>
+                        <span>微服务</span>
+                        <span>MySQL</span>
+                        <span>Redis</span>
+                        <span>MQ</span>
+                        <span>TraceId</span>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p class="footer-quote">Always remember that U Are free to BE</p>
+        </div>
+    </footer>
+
+    <script src="shared.js?v=c3c51f5a" defer></script>
+    <script src="simple-page.js?v=c3c51f5a" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js" defer></script>
+    <script src="animations.js?v=bfx1" defer></script>
+</body>
+
+</html>
