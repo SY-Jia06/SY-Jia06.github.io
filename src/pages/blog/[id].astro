@@ -1,0 +1,127 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import {
+    formatDate,
+    getAbsolutePostUrl,
+    getAdjacentPosts,
+    getAllPosts,
+    getPostUrl,
+    renderPost
+} from "../../lib/posts.mjs";
+
+export function getStaticPaths() {
+    return getAllPosts().map((post) => ({
+        params: { id: post.id },
+        props: { post }
+    }));
+}
+
+const { post } = Astro.props;
+const { html, headings } = await renderPost(post);
+const { previous, next } = getAdjacentPosts(post.id);
+const heroImage = post.coverImage || "";
+const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    datePublished: post.date,
+    description: post.summary,
+    url: getAbsolutePostUrl(post),
+    author: {
+        "@type": "Person",
+        name: "SY-Jia06"
+    }
+};
+---
+
+<BaseLayout
+    title={`${post.title} | SY-Jia06`}
+    description={post.summary}
+    active="blog"
+    canonical={getPostUrl(post)}
+    image={heroImage || "/assets/avatar.jpg"}
+    type="article"
+    jsonLd={jsonLd}
+    includeLightbox={true}
+>
+    <main>
+        <div class="board-shell board-shell-blog">
+            <div class="blog-page-grid reading-mode" id="blogPageLayout">
+                <section class="content-column">
+                    <div class="post-view" id="postView">
+                        <a class="back-btn" href="/blog/">返回博客列表</a>
+                        <div class="article-layout article-layout-reading" id="articleLayout">
+                            <aside class="article-side article-side-left">
+                                {headings.some((item) => item.level === 2) && (
+                                    <aside class="post-toc" id="postToc">
+                                        <div class="post-side-label">目录</div>
+                                        <div class="post-toc-list">
+                                            {headings.map((item) => (
+                                                <a href={`#${item.id}`} class={`post-toc-link level-${item.level}`}>{item.text}</a>
+                                            ))}
+                                        </div>
+                                    </aside>
+                                )}
+                            </aside>
+
+                            <div class="article-main">
+                                <section class="post-hero" id="postHero" style={heroImage ? `background-image: linear-gradient(135deg, rgba(12, 57, 67, 0.54), rgba(28, 103, 116, 0.36)), url('${heroImage}');` : ""}>
+                                    <div class="post-hero-overlay"></div>
+                                    <div class="post-hero-inner">
+                                        <div class="post-hero-meta" id="postMetaHead">
+                                            <span>{formatDate(post.date)}</span>
+                                            <a class="post-card-category is-link" href={`/blog/?category=${encodeURIComponent(post.category)}`}>{post.category}</a>
+                                            {post.tags.map((tag) => <a class="post-tag" href={`/blog/?tag=${encodeURIComponent(tag)}`}>{tag}</a>)}
+                                            <span class="post-view-count" id="postViewCount" hidden>阅读量加载中</span>
+                                        </div>
+                                        <h1 class="post-hero-title" id="postHeroTitle">{post.title}</h1>
+                                    </div>
+                                </section>
+                                <article class="post-shell post-shell-reading">
+                                    <article class="post-content" id="postContent" set:html={html}></article>
+                                    {(previous || next) && (
+                                        <nav class="post-pagination" id="postPagination">
+                                            {previous && (
+                                                <a class="post-pagination-card is-previous" href={getPostUrl(previous)}>
+                                                    <span class="post-pagination-label">上一篇</span>
+                                                    <strong>{previous.title}</strong>
+                                                </a>
+                                            )}
+                                            {next && (
+                                                <a class="post-pagination-card is-next" href={getPostUrl(next)}>
+                                                    <span class="post-pagination-label">下一篇</span>
+                                                    <strong>{next.title}</strong>
+                                                </a>
+                                            )}
+                                        </nav>
+                                    )}
+                                </article>
+                            </div>
+
+                            <aside class="article-side article-side-right"></aside>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+    <script define:vars={{ postId: post.id }} is:inline>
+        document.addEventListener("DOMContentLoaded", async () => {
+            const target = document.getElementById("postViewCount");
+            if (!target) return;
+            try {
+                const response = await fetch(`/api/views?slug=${encodeURIComponent(postId)}`, {
+                    headers: { Accept: "application/json" }
+                });
+                if (!response.ok) throw new Error("View counter unavailable");
+                const payload = await response.json();
+                const count = Number(payload.count);
+                if (!Number.isFinite(count)) return;
+                target.textContent = `阅读 ${count}`;
+                target.hidden = false;
+            } catch (error) {
+                target.hidden = true;
+            }
+        });
+    </script>
+</BaseLayout>

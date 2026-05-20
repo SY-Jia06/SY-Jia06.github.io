@@ -1,0 +1,17 @@
+{
+  "name": "sy-jia06-blog",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "prepare:public": "node scripts/prepare-public-assets.cjs",
+    "dev": "npm run prepare:public && astro dev",
+    "build": "npm run prepare:public && astro build",
+    "preview": "astro preview",
+    "test": "node --test tests/*.test.js"
+  },
+  "dependencies": {
+    "@astrojs/rss": "^4.0.18",
+    "astro": "^6.3.6",
+    "marked": "^18.0.4"
+  }
+}

@@ -1,0 +1,71 @@
+---
+import Nav from "../components/Nav.astro";
+
+const {
+    title = "SY-Jia06 | Blog Portal",
+    description = "SY-Jia06 的技术博客，记录 Java 后端、AI Agent 与课程笔记。",
+    active = "",
+    canonical = Astro.url.pathname,
+    image = "/assets/avatar.jpg",
+    type = "website",
+    jsonLd = null,
+    includeLightbox = false
+} = Astro.props;
+
+const canonicalUrl = new URL(canonical, Astro.site || "https://sy-jia06.github.io").toString();
+const imageUrl = new URL(image, Astro.site || "https://sy-jia06.github.io").toString();
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content={description} />
+        <title>{title}</title>
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:type" content={type} />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:image" content={imageUrl} />
+        <meta property="og:site_name" content="SY-Jia06" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={imageUrl} />
+        <link rel="canonical" href={canonicalUrl} />
+        <link rel="icon" href="/assets/avatar.jpg" type="image/jpeg" />
+        <link rel="alternate" type="application/rss+xml" title="SY-Jia06 RSS" href="/rss.xml" />
+        <script src="/theme.js" is:inline></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link rel="preload" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+        <noscript><link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" /></noscript>
+        <link rel="stylesheet" href="/style.css" />
+        {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+    </head>
+    <body>
+        <Nav active={active} />
+        {includeLightbox && (
+            <div class="image-lightbox" id="imageLightbox" hidden>
+                <button class="image-lightbox-close" data-lightbox-close aria-label="Close lightbox">&times;</button>
+                <div class="image-lightbox-stage">
+                    <img id="imageLightboxImg" src="" alt="" />
+                    <p class="image-lightbox-caption" id="imageLightboxCaption"></p>
+                </div>
+            </div>
+        )}
+        <slot />
+        <footer class="footer">
+            <div class="footer-content">
+                <p class="footer-quote">Always remember that U Are free to BE</p>
+            </div>
+        </footer>
+        <script src="/shared.js" defer></script>
+        {includeLightbox && <script src="/image-lightbox.js" defer></script>}
+        <script src="/simple-page.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js" defer></script>
+        <script src="/animations.js" defer></script>
+    </body>
+</html>

@@ -28,7 +28,7 @@ test("opening a post hides the outer blog list shell instead of leaving an empty
 test("reading mode keeps top spacing for the fixed navbar", () => {
     assert.match(
         styleCss,
-        /\.blog-page-grid\.reading-mode\s*\{[\s\S]*padding-top:\s*calc\(var\(--nav-height\)\s*\+\s*18px\);[\s\S]*\}/
+        /\.blog-page-grid\.reading-mode\s*\{[\s\S]*padding-top:\s*0;[\s\S]*\}/
     );
 });
 

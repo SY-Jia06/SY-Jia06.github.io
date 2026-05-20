@@ -1,0 +1,27 @@
+---
+import { formatDate, getPostUrl } from "../lib/posts.mjs";
+
+const { post, className = "" } = Astro.props;
+const coverStyle = post.coverImage ? `--cover-image: url('${post.coverImage}');` : "";
+const imageClass = post.coverImage ? " has-image" : "";
+---
+
+<a class={`post-card-link ${className}`} href={getPostUrl(post)} data-post-card data-title={post.title.toLowerCase()} data-summary={post.summary.toLowerCase()} data-category={post.category} data-tags={post.tags.join(" ")}>
+    <article class="post-card">
+        <div class={`post-card-cover tone-${post.coverTone || "teal"}${imageClass}`} style={coverStyle}>
+            <span>{post.coverLabel || "POST"}</span>
+            <span>{post.date.slice(5).replace("-", ".")}</span>
+        </div>
+        <div class="post-card-body">
+            <div class="post-card-meta">
+                <span>{formatDate(post.date)}</span>
+                <span class="post-card-category is-link">{post.category}</span>
+            </div>
+            <h3 class="post-card-title">{post.title}</h3>
+            <p class="post-card-summary">{post.summary}</p>
+            <div class="post-card-tags">
+                {post.tags.map((tag) => <span class="post-tag">{tag}</span>)}
+            </div>
+        </div>
+    </article>
+</a>

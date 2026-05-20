@@ -17,9 +17,12 @@ test("Pages Function exposes a KV-backed article view counter endpoint", () => {
 
 test("blog article page requests and renders the view count for the active post", () => {
     const blogAppJs = fs.readFileSync(path.join(root, "blog-app.js"), "utf8");
+    const astroArticle = fs.readFileSync(path.join(root, "src", "pages", "blog", "[id].astro"), "utf8");
     const styleCss = fs.readFileSync(path.join(root, "style.css"), "utf8");
 
     assert.match(blogAppJs, /fetchPostViews\(post\.id\)/);
+    assert.match(astroArticle, /post-view-count/);
+    assert.match(astroArticle, /\/api\/views\?slug=/);
     assert.match(blogAppJs, /post-view-count/);
     assert.match(styleCss, /\.post-view-count\s*\{/);
 });

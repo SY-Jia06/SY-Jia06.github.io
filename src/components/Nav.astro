@@ -1,0 +1,40 @@
+---
+const { active = "" } = Astro.props;
+const navItems = [
+    { href: "/", label: "首页", key: "home" },
+    { href: "/blog/", label: "博客", key: "blog" },
+    { href: "/projects/", label: "项目", key: "projects" },
+    { href: "/about/", label: "关于", key: "about" }
+];
+---
+
+<nav class="navbar" id="navbar">
+    <div class="nav-container">
+        <a href="/" class="nav-logo">SY/J</a>
+        <div class="nav-links">
+            {navItems.map((item) => (
+                <a href={item.href} class={`nav-link${active === item.key ? " active" : ""}`}>{item.label}</a>
+            ))}
+            <div class="theme-switcher" aria-label="Theme switcher">
+                <button type="button" class="theme-btn" data-theme-mode="light">浅</button>
+                <button type="button" class="theme-btn" data-theme-mode="dark">深</button>
+                <button type="button" class="theme-btn" data-theme-mode="system">随</button>
+            </div>
+            <a href="https://github.com/SY-Jia06" target="_blank" rel="noreferrer" class="nav-link">GitHub</a>
+        </div>
+        <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+    {navItems.map((item) => (
+        <a href={item.href} class={`mobile-link${active === item.key ? " active" : ""}`}>{item.label}</a>
+    ))}
+    <div class="theme-switcher theme-switcher-mobile" aria-label="Theme switcher">
+        <button type="button" class="theme-btn" data-theme-mode="light">浅色</button>
+        <button type="button" class="theme-btn" data-theme-mode="dark">深色</button>
+        <button type="button" class="theme-btn" data-theme-mode="system">系统</button>
+    </div>
+</div>

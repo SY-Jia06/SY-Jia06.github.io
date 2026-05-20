@@ -1,0 +1,155 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PostCard from "../components/PostCard.astro";
+import {
+    formatArchive,
+    formatDate,
+    getAllPosts,
+    getAllTags,
+    getArchiveCounts,
+    getCategoryCounts,
+    getSiteStats
+} from "../lib/posts.mjs";
+
+const posts = getAllPosts();
+const recentPosts = posts.slice(0, 3);
+const stats = getSiteStats();
+---
+
+<BaseLayout active="home" canonical="/">
+    <main id="app">
+        <section class="page page-home active" id="page-home">
+            <header class="banner-shell home-banner">
+                <div class="banner-overlay"></div>
+                <div class="banner-inner">
+                    <p class="banner-kicker">SY-Jia06 / Notes and Builds</p>
+                    <h1 class="banner-title">Winter is HERE</h1>
+                    <p class="banner-subtitle">
+                        <strong>Hi there!</strong><br />
+                        🎧 My passion lives in <em>Audio</em>.<br />
+                        I'm also building <strong>solid engineering foundations</strong><br />
+                        on the ⚙️ <em>backend</em> side.
+                    </p>
+                    <div class="banner-actions">
+                        <a href="/blog/" class="btn btn-primary">进入博客</a>
+                        <a href="/about/" class="btn btn-secondary">了解我</a>
+                    </div>
+                </div>
+            </header>
+
+            <div class="board-shell">
+                <div class="board-grid">
+                    <div class="content-column">
+                        <section class="panel">
+                            <div class="section-heading section-heading-inline">
+                                <div>
+                                    <span class="section-eyebrow">Recent Posts</span>
+                                    <h2>最新博客</h2>
+                                </div>
+                                <a href="/blog/" class="section-link">查看全部</a>
+                            </div>
+                            <div class="featured-posts">
+                                {recentPosts.map((post) => <PostCard post={post} className="post-card-link-home" />)}
+                            </div>
+                        </section>
+
+                        <section class="panel taxonomy-panel">
+                            <div class="section-heading">
+                                <span class="section-eyebrow">Explore</span>
+                                <h2>按栏目继续阅读</h2>
+                            </div>
+                            <div class="taxonomy-grid">
+                                <div class="taxonomy-card">
+                                    <h3>分类</h3>
+                                    <div class="taxonomy-list">
+                                        {getCategoryCounts().map((item) => (
+                                            <a class="taxonomy-item-link" href={`/blog/?category=${encodeURIComponent(item.name)}`}>
+                                                <span>{item.name}</span><span>{item.count}</span>
+                                            </a>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div class="taxonomy-card">
+                                    <h3>归档</h3>
+                                    <div class="taxonomy-list">
+                                        {getArchiveCounts().map((item) => (
+                                            <a class="taxonomy-item-link" href={`/blog/?archive=${encodeURIComponent(item.month)}`}>
+                                                <span>{formatArchive(item.month)}</span><span>{item.count}</span>
+                                            </a>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div class="taxonomy-card">
+                                    <h3>标签</h3>
+                                    <div class="tag-cloud">
+                                        {getAllTags().map((tag) => (
+                                            <a class="post-tag tag-cloud-link" href={`/blog/?tag=${encodeURIComponent(tag)}`}>{tag}</a>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+
+                    <aside class="sidebar-column">
+                        <section class="panel side-card profile-card">
+                            <span class="section-eyebrow">Author</span>
+                            <h2>SY/J</h2>
+                            <p>吉林大学唐敖庆班，持续整理后端、系统基础与项目笔记。</p>
+                            <div class="side-meta">
+                                <span>{stats.postCount} 篇文章</span>
+                                <span>{stats.categoryCount} 个分类</span>
+                                <span>{stats.tagCount} 个标签</span>
+                                {stats.latestDate && <span>更新于 {formatDate(stats.latestDate)}</span>}
+                            </div>
+                            <div class="side-links">
+                                <a href="https://github.com/SY-Jia06" target="_blank" rel="noreferrer">GitHub</a>
+                                <a href="mailto:a168995738@outlook.com">Email</a>
+                            </div>
+                        </section>
+
+                        <section class="panel side-card">
+                            <span class="section-eyebrow">Projects</span>
+                            <h2>项目记录</h2>
+                            <div class="mini-project-list">
+                                <div class="mini-project-group">
+                                    <p class="mini-project-group-title">正在沉淀的项目</p>
+                                    <article class="mini-project">
+                                        <h3>食速达：外卖订餐管理系统</h3>
+                                        <p>围绕点餐、订单和推送链路做后端开发，覆盖缓存、接口文档和实时状态同步。</p>
+                                    </article>
+                                    <article class="mini-project">
+                                        <h3>印迹：笔记发布与审核系统</h3>
+                                        <p>聚焦笔记发布、审核和状态流转，继续往微服务拆分、异步审核和链路追踪推进。</p>
+                                    </article>
+                                </div>
+                                <div class="mini-project-group">
+                                    <p class="mini-project-group-title">过往项目</p>
+                                    <article class="mini-project">
+                                        <h3>Virtual Cell Challenge：单细胞微扰预测</h3>
+                                        <p>参与科研协作，负责模型复现、训练实现和实验落地，也围绕奖励设计与指标优化做过少量探索。</p>
+                                    </article>
+                                </div>
+                            </div>
+                        </section>
+                    </aside>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script is:inline>
+        document.addEventListener("DOMContentLoaded", () => {
+            const banner = document.querySelector(".home-banner");
+            if (!banner) return;
+            const backgrounds = ["/assets/banner.png", "/assets/home-bg.png"];
+            let currentIndex = Math.random() > 0.5 ? 0 : 1;
+            banner.style.backgroundImage = `url("${backgrounds[currentIndex]}")`;
+            banner.style.cursor = "pointer";
+            banner.addEventListener("click", (event) => {
+                if (event.target.closest("button, a")) return;
+                currentIndex = (currentIndex + 1) % backgrounds.length;
+                banner.style.backgroundImage = `url("${backgrounds[currentIndex]}")`;
+            });
+        });
+    </script>
+</BaseLayout>

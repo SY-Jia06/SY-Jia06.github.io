@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="robots" content="noindex">
+        <title>博客跳转 | SY-Jia06</title>
+        <link rel="canonical" href="https://sy-jia06.github.io/blog/">
+        <meta http-equiv="refresh" content="0; url=/blog/">
+    </head>
+    <body>
+        <p>Redirecting to <a href="/blog/">/blog/</a>...</p>
+        <script>
+            const params = new URLSearchParams(window.location.search);
+            const post = params.get("post") || window.location.hash.slice(1);
+            window.location.replace(post ? `/blog/${encodeURIComponent(post)}/` : "/blog/");
+        </script>
+    </body>
+</html>

@@ -1,0 +1,168 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PostCard from "../../components/PostCard.astro";
+import {
+    formatDate,
+    getAllPosts,
+    getAllTags,
+    getCategoryCounts,
+    getSiteStats
+} from "../../lib/posts.mjs";
+
+const posts = getAllPosts();
+const stats = getSiteStats();
+---
+
+<BaseLayout title="博客列表 | SY-Jia06" description="SY-Jia06 的技术博客列表。" active="blog" canonical="/blog/">
+    <main>
+        <header class="banner-shell compact-banner" id="blogBanner">
+            <div class="banner-overlay"></div>
+            <div class="banner-inner">
+                <div class="banner-toolbar" id="blogTopToolbar">
+                    <button type="button" class="toolbar-chip active" data-filter-clear>{stats.postCount} 篇文章</button>
+                    <button type="button" class="toolbar-chip" data-browser-action="categories">{stats.categoryCount} 个分类</button>
+                    <button type="button" class="toolbar-chip" data-browser-action="tags">{stats.tagCount} 个标签</button>
+                    {stats.latestDate && <button type="button" class="toolbar-chip" data-latest-url={`/blog/${posts[0].id}/`}>最近更新 {formatDate(stats.latestDate)}</button>}
+                </div>
+                <h1 class="banner-title">博客列表</h1>
+                <div class="quick-browser" id="quickBrowser" hidden>
+                    <div class="quick-browser-section" data-panel="categories" hidden>
+                        <span class="quick-browser-label">分类列表</span>
+                        <div class="quick-browser-list">
+                            {getCategoryCounts().map((item) => (
+                                <button type="button" class="quick-browser-item" data-category={item.name}><span>{item.name}</span><span>{item.count}</span></button>
+                            ))}
+                        </div>
+                    </div>
+                    <div class="quick-browser-section" data-panel="tags" hidden>
+                        <span class="quick-browser-label">标签列表</span>
+                        <div class="quick-browser-list quick-browser-list-tags">
+                            {getAllTags().map((tag) => <button type="button" class="quick-browser-item" data-tag-browser={tag}><span>{tag}</span></button>)}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="board-shell board-shell-blog">
+            <div class="blog-page-grid" id="blogPageLayout">
+                <section class="content-column">
+                    <section class="blog-list-shell" id="blogListShell">
+                        <div class="panel filter-panel" id="listPanel">
+                            <div class="section-heading">
+                                <h2>查找博客</h2>
+                            </div>
+                            <div class="search-row">
+                                <input id="searchInput" class="search-input" type="search" placeholder="搜索标题、标签、摘要" />
+                            </div>
+                            <div class="active-filter-bar" id="activeFilterBar"></div>
+                            <div class="tag-filter" id="tagFilter">
+                                <button class="tag-btn active" data-tag="all">全部</button>
+                                {getAllTags().map((tag) => <button class="tag-btn" data-tag={tag}>{tag}</button>)}
+                            </div>
+                        </div>
+
+                        <div class="blog-list" id="blogList">
+                            {posts.map((post) => <PostCard post={post} />)}
+                            <div class="empty-state" id="emptyState" hidden>没有匹配的文章，换个关键词或标签试试。</div>
+                        </div>
+                    </section>
+                </section>
+            </div>
+        </div>
+    </main>
+    <script is:inline>
+        document.addEventListener("DOMContentLoaded", () => {
+            const cards = Array.from(document.querySelectorAll("[data-post-card]"));
+            const searchInput = document.getElementById("searchInput");
+            const tagButtons = Array.from(document.querySelectorAll("[data-tag]"));
+            const activeFilterBar = document.getElementById("activeFilterBar");
+            const emptyState = document.getElementById("emptyState");
+            const quickBrowser = document.getElementById("quickBrowser");
+            let currentTag = new URLSearchParams(window.location.search).get("tag") || "all";
+            let currentCategory = new URLSearchParams(window.location.search).get("category") || "";
+            let currentKeyword = "";
+
+            function applyFilters() {
+                let visibleCount = 0;
+                cards.forEach((card) => {
+                    const source = [card.dataset.title, card.dataset.summary, card.dataset.category, card.dataset.tags].join(" ").toLowerCase();
+                    const matchesKeyword = !currentKeyword || source.includes(currentKeyword);
+                    const matchesTag = currentTag === "all" || card.dataset.tags.split(" ").includes(currentTag);
+                    const matchesCategory = !currentCategory || card.dataset.category === currentCategory;
+                    const visible = matchesKeyword && matchesTag && matchesCategory;
+                    card.hidden = !visible;
+                    if (visible) visibleCount += 1;
+                });
+                emptyState.hidden = visibleCount > 0;
+                renderActiveFilters();
+                tagButtons.forEach((button) => button.classList.toggle("active", button.dataset.tag === currentTag));
+            }
+
+            function renderActiveFilters() {
+                const items = [];
+                if (currentCategory) items.push(`分类: ${currentCategory}`);
+                if (currentTag !== "all") items.push(`标签: ${currentTag}`);
+                if (currentKeyword) items.push(`搜索: ${currentKeyword}`);
+                activeFilterBar.innerHTML = items.length
+                    ? `${items.map((item) => `<span class="active-filter-chip">${item}</span>`).join("")}<button type="button" class="active-filter-clear" id="clearFiltersBtn">清除筛选</button>`
+                    : "";
+                document.getElementById("clearFiltersBtn")?.addEventListener("click", clearFilters);
+            }
+
+            function clearFilters() {
+                currentTag = "all";
+                currentCategory = "";
+                currentKeyword = "";
+                searchInput.value = "";
+                history.replaceState("", document.title, "/blog/");
+                applyFilters();
+            }
+
+            searchInput.addEventListener("input", (event) => {
+                currentKeyword = event.target.value.trim().toLowerCase();
+                applyFilters();
+            });
+
+            tagButtons.forEach((button) => {
+                button.addEventListener("click", () => {
+                    currentTag = button.dataset.tag;
+                    applyFilters();
+                });
+            });
+
+            document.querySelectorAll("[data-category]").forEach((button) => {
+                button.addEventListener("click", () => {
+                    currentCategory = button.dataset.category;
+                    quickBrowser.hidden = true;
+                    applyFilters();
+                });
+            });
+
+            document.querySelectorAll("[data-tag-browser]").forEach((button) => {
+                button.addEventListener("click", () => {
+                    currentTag = button.dataset.tagBrowser;
+                    quickBrowser.hidden = true;
+                    applyFilters();
+                });
+            });
+
+            document.querySelectorAll("[data-browser-action]").forEach((button) => {
+                button.addEventListener("click", () => {
+                    const panel = button.dataset.browserAction;
+                    const section = quickBrowser.querySelector(`[data-panel="${panel}"]`);
+                    quickBrowser.querySelectorAll("[data-panel]").forEach((item) => item.hidden = item !== section);
+                    quickBrowser.hidden = !quickBrowser.hidden && !section.hidden ? true : false;
+                    if (!quickBrowser.hidden) section.hidden = false;
+                });
+            });
+
+            document.querySelector("[data-filter-clear]")?.addEventListener("click", clearFilters);
+            document.querySelector("[data-latest-url]")?.addEventListener("click", (event) => {
+                window.location.href = event.currentTarget.dataset.latestUrl;
+            });
+
+            applyFilters();
+        });
+    </script>
+</BaseLayout>
