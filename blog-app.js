@@ -340,6 +340,27 @@ function filterPosts() {
     });
 }
 
+async function fetchPostViews(postId) {
+    const target = document.getElementById("postViewCount");
+    if (!target || !postId) return;
+
+    try {
+        const response = await fetch(`/api/views?slug=${encodeURIComponent(postId)}`, {
+            headers: { Accept: "application/json" }
+        });
+        if (!response.ok) throw new Error("View counter unavailable");
+
+        const payload = await response.json();
+        const count = Number(payload.count);
+        if (activePostId !== postId || !Number.isFinite(count)) return;
+
+        target.textContent = `阅读 ${count}`;
+        target.hidden = false;
+    } catch (error) {
+        target.hidden = true;
+    }
+}
+
 async function openPost(postId) {
     return openPostInternal(postId, { skipHistory: false });
 }
@@ -415,7 +436,9 @@ async function openPostInternal(postId, { skipHistory = false } = {}) {
         <span>${formatDate(post.date)}</span>
         <a class="post-card-category is-link" href="${buildFilterUrl({ category: post.category })}">${post.category}</a>
         ${post.tags.map((tag) => `<a class="post-tag" href="${buildFilterUrl({ tag })}">${tag}</a>`).join("")}
+        <span class="post-view-count" id="postViewCount" hidden>阅读量加载中</span>
     `;
+    fetchPostViews(post.id);
 
     try {
         const response = await fetch(post.file);

@@ -1659,6 +1659,19 @@ a.about-contact-item:hover .contact-text {
     color: #f4fbfb;
 }
 
+.post-view-count {
+    display: inline-flex;
+    align-items: center;
+    min-height: 30px;
+    padding: 4px 11px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.14);
+    color: #f4fbfb;
+    font-size: 0.84rem;
+    line-height: 1.35;
+}
+
 .post-hero-title {
     margin: 0;
     max-width: 860px;
