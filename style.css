@@ -1672,6 +1672,10 @@ a.about-contact-item:hover .contact-text {
     line-height: 1.35;
 }
 
+.post-view-count[hidden] {
+    display: none;
+}
+
 .post-hero-title {
     margin: 0;
     max-width: 860px;
