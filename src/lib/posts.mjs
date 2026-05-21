@@ -305,7 +305,8 @@ function normalizeCategory(value) {
         OS: "操作系统",
         DB: "数据库",
         NET: "计算机网络",
-        Essay: "随笔"
+        Essay: "随笔",
+        Thoughts: "随想"
     };
     return map[value] || value;
 }

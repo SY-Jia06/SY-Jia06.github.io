@@ -31,6 +31,17 @@ test("machine-readable outputs exist for RSS, posts JSON, search JSON, and sitem
     });
 });
 
+test("thought fragments have a dedicated 随想 category", () => {
+    const postsLib = fs.readFileSync(path.join(root, "src", "lib", "posts.mjs"), "utf8");
+    const thoughtPostPath = path.join(root, "posts", "Thoughts", "writing-threshold.md");
+    const thoughtPost = fs.readFileSync(thoughtPostPath, "utf8");
+
+    assert.match(postsLib, /Thoughts:\s*"随想"/);
+    assert.match(thoughtPost, /category:\s*随想/);
+    assert.match(thoughtPost, /tags:[\s\S]*-\s*随想/);
+    assert.ok(thoughtPost.length < 1600, "随想 should stay short enough to keep the writing threshold low");
+});
+
 test("article pages use generated Open Graph images", () => {
     const packageJson = JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8"));
     const articlePage = fs.readFileSync(path.join(root, "src", "pages", "blog", "[id].astro"), "utf8");
