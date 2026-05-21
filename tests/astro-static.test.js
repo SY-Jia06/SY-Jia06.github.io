@@ -31,15 +31,12 @@ test("machine-readable outputs exist for RSS, posts JSON, search JSON, and sitem
     });
 });
 
-test("thought fragments have a dedicated 随想 category", () => {
+test("随想 is available as a tag without publishing a placeholder post", () => {
     const postsLib = fs.readFileSync(path.join(root, "src", "lib", "posts.mjs"), "utf8");
-    const thoughtPostPath = path.join(root, "posts", "Thoughts", "writing-threshold.md");
-    const thoughtPost = fs.readFileSync(thoughtPostPath, "utf8");
 
-    assert.match(postsLib, /Thoughts:\s*"随想"/);
-    assert.match(thoughtPost, /category:\s*随想/);
-    assert.match(thoughtPost, /tags:[\s\S]*-\s*随想/);
-    assert.ok(thoughtPost.length < 1600, "随想 should stay short enough to keep the writing threshold low");
+    assert.match(postsLib, /PINNED_TAGS\s*=\s*\["随想"\]/);
+    assert.doesNotMatch(postsLib, /Thoughts:\s*"随想"/);
+    assert.equal(fs.existsSync(path.join(root, "posts", "Thoughts", "writing-threshold.md")), false);
 });
 
 test("article pages use generated Open Graph images", () => {

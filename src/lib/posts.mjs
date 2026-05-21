@@ -6,6 +6,7 @@ const SITE_URL = "https://syjia.pages.dev";
 const ROOT = process.cwd();
 const POSTS_ROOT = path.join(ROOT, "posts");
 const COVER_TONES = ["teal", "amber", "slate"];
+const PINNED_TAGS = ["随想"];
 
 let cachedPosts;
 let cachedLegacyPosts;
@@ -38,6 +39,7 @@ export function getPostOgImageUrl(post) {
 export function getAllTags() {
     const tags = new Set();
     getAllPosts().forEach((post) => post.tags.forEach((tag) => tags.add(tag)));
+    PINNED_TAGS.forEach((tag) => tags.add(tag));
     return Array.from(tags);
 }
 
@@ -305,8 +307,7 @@ function normalizeCategory(value) {
         OS: "操作系统",
         DB: "数据库",
         NET: "计算机网络",
-        Essay: "随笔",
-        Thoughts: "随想"
+        Essay: "随笔"
     };
     return map[value] || value;
 }
