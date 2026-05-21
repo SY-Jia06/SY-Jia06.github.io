@@ -1,6 +1,6 @@
 import { defineConfig } from "astro/config";
 
 export default defineConfig({
-    site: "https://sy-jia06.github.io",
+    site: "https://syjia.pages.dev",
     output: "static"
 });

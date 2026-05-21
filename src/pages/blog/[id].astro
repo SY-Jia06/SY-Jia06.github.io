@@ -5,6 +5,7 @@ import {
     getAbsolutePostUrl,
     getAdjacentPosts,
     getAllPosts,
+    getPostOgImageUrl,
     getPostUrl,
     renderPost
 } from "../../lib/posts.mjs";
@@ -20,12 +21,14 @@ const { post } = Astro.props;
 const { html, headings } = await renderPost(post);
 const { previous, next } = getAdjacentPosts(post.id);
 const heroImage = post.coverImage || "";
+const ogImage = getPostOgImageUrl(post);
 const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     headline: post.title,
     datePublished: post.date,
     description: post.summary,
+    image: new URL(ogImage, Astro.site || "https://syjia.pages.dev").toString(),
     url: getAbsolutePostUrl(post),
     author: {
         "@type": "Person",
@@ -39,7 +42,9 @@ const jsonLd = {
     description={post.summary}
     active="blog"
     canonical={getPostUrl(post)}
-    image={heroImage || "/assets/avatar.jpg"}
+    image={getPostOgImageUrl(post)}
+    imageWidth={1200}
+    imageHeight={630}
     type="article"
     jsonLd={jsonLd}
     includeLightbox={true}

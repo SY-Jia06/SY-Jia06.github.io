@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { marked } from "marked";
 
-const SITE_URL = "https://sy-jia06.github.io";
+const SITE_URL = "https://syjia.pages.dev";
 const ROOT = process.cwd();
 const POSTS_ROOT = path.join(ROOT, "posts");
 const COVER_TONES = ["teal", "amber", "slate"];
@@ -29,6 +29,10 @@ export function getPostUrl(post) {
 
 export function getAbsolutePostUrl(post) {
     return `${SITE_URL}${getPostUrl(post)}`;
+}
+
+export function getPostOgImageUrl(post) {
+    return `/og/${post.id}.png`;
 }
 
 export function getAllTags() {

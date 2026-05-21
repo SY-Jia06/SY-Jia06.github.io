@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "prepare:public": "node scripts/prepare-public-assets.cjs",
+    "prepare:public": "node scripts/prepare-public-assets.cjs && node scripts/generate-og-images.mjs",
     "dev": "npm run prepare:public && astro dev",
     "build": "npm run prepare:public && astro build",
     "preview": "astro preview",
@@ -11,7 +11,10 @@
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.18",
+    "@embedpdf/fonts-sc": "^1.0.0",
+    "@resvg/resvg-js": "^2.6.2",
     "astro": "^6.3.6",
-    "marked": "^18.0.4"
+    "marked": "^18.0.4",
+    "satori": "^0.26.0"
   }
 }
