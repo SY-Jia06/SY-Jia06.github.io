@@ -142,6 +142,26 @@ html {
     scroll-behavior: smooth;
 }
 
+html.theme-changing *,
+html.theme-changing *::before,
+html.theme-changing *::after {
+    transition:
+        background-color 220ms ease,
+        background 220ms ease,
+        color 220ms ease,
+        border-color 220ms ease,
+        box-shadow 220ms ease,
+        opacity 220ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html.theme-changing *,
+    html.theme-changing *::before,
+    html.theme-changing *::after {
+        transition: none !important;
+    }
+}
+
 body {
     margin: 0;
     min-height: 100vh;
