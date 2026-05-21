@@ -13,7 +13,11 @@
         <script>
             const params = new URLSearchParams(window.location.search);
             const post = params.get("post") || window.location.hash.slice(1);
-            window.location.replace(post ? `/blog/${encodeURIComponent(post)}/` : "/blog/");
+            if (post) {
+                window.location.replace(`/blog/${encodeURIComponent(post)}/`);
+            } else {
+                window.location.replace(`/blog/${window.location.search}`);
+            }
         </script>
     </body>
 </html>

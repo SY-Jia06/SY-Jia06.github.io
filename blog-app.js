@@ -289,6 +289,38 @@ function renderBlogList() {
         card.addEventListener("click", () => openPost(card.dataset.id));
     });
 
+    // Intercept clicks on category links inside cards to prevent openPost navigation
+    container.querySelectorAll(".post-card-category").forEach((link) => {
+        link.addEventListener("click", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            const urlParams = new URLSearchParams(link.search);
+            currentCategory = urlParams.get("category") || "";
+            syncFiltersToUrl();
+            renderTagFilter();
+            renderActiveFilters();
+            renderTopToolbar();
+            renderBlogList();
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+    });
+
+    // Intercept clicks on tag links inside cards to prevent openPost navigation
+    container.querySelectorAll(".post-tag").forEach((link) => {
+        link.addEventListener("click", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            const urlParams = new URLSearchParams(link.search);
+            currentTag = urlParams.get("tag") || "all";
+            syncFiltersToUrl();
+            renderTagFilter();
+            renderActiveFilters();
+            renderTopToolbar();
+            renderBlogList();
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+    });
+
     observePostCards();
 }
 

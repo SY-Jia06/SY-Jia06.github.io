@@ -1991,8 +1991,8 @@ html[data-theme="dark"] .post-subtoc-empty {
     padding: 36px 24px;
     text-align: center;
     color: var(--text-muted);
-    background: white;
-    border: 1px dashed var(--line-strong);
+    background: var(--bg-panel);
+    border: 1px dashed var(--line-soft);
     border-radius: var(--radius-lg);
 }
 

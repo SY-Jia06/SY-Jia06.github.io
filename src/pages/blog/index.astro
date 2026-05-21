@@ -79,9 +79,25 @@ const stats = getSiteStats();
             const activeFilterBar = document.getElementById("activeFilterBar");
             const emptyState = document.getElementById("emptyState");
             const quickBrowser = document.getElementById("quickBrowser");
-            let currentTag = new URLSearchParams(window.location.search).get("tag") || "all";
-            let currentCategory = new URLSearchParams(window.location.search).get("category") || "";
-            let currentKeyword = "";
+            
+            const params = new URLSearchParams(window.location.search);
+            let currentTag = params.get("tag") || "all";
+            let currentCategory = params.get("category") || "";
+            let currentKeyword = (params.get("q") || "").trim().toLowerCase();
+            let currentBrowserPanel = "";
+
+            if (currentKeyword && searchInput) {
+                searchInput.value = params.get("q");
+            }
+
+            function syncFiltersToUrl() {
+                const params = new URLSearchParams();
+                if (currentTag !== "all") params.set("tag", currentTag);
+                if (currentCategory) params.set("category", currentCategory);
+                if (currentKeyword) params.set("q", currentKeyword);
+                const query = params.toString();
+                history.replaceState("", document.title, `/blog/${query ? `?${query}` : ""}`);
+            }
 
             function applyFilters() {
                 let visibleCount = 0;
@@ -91,12 +107,43 @@ const stats = getSiteStats();
                     const matchesTag = currentTag === "all" || card.dataset.tags.split(" ").includes(currentTag);
                     const matchesCategory = !currentCategory || card.dataset.category === currentCategory;
                     const visible = matchesKeyword && matchesTag && matchesCategory;
-                    card.hidden = !visible;
+                    card.style.display = visible ? "" : "none";
                     if (visible) visibleCount += 1;
                 });
-                emptyState.hidden = visibleCount > 0;
+                emptyState.style.display = visibleCount > 0 ? "none" : "block";
                 renderActiveFilters();
+                updateHighlights();
+            }
+
+            function updateHighlights() {
                 tagButtons.forEach((button) => button.classList.toggle("active", button.dataset.tag === currentTag));
+                
+                document.querySelectorAll("[data-category]").forEach((btn) => {
+                    btn.classList.toggle("active", btn.dataset.category === currentCategory);
+                });
+                
+                document.querySelectorAll("[data-tag-browser]").forEach((btn) => {
+                    btn.classList.toggle("active", btn.dataset.tagBrowser === currentTag);
+                });
+
+                const topToolbar = document.getElementById("blogTopToolbar");
+                if (topToolbar) {
+                    const clearBtn = topToolbar.querySelector("[data-filter-clear]");
+                    const catBtn = topToolbar.querySelector('[data-browser-action="categories"]');
+                    const tagBrowserBtn = topToolbar.querySelector('[data-browser-action="tags"]');
+                    
+                    const hasActiveFilter = currentCategory || currentTag !== "all" || currentKeyword;
+                    
+                    if (clearBtn) {
+                        clearBtn.classList.toggle("active", !hasActiveFilter && !currentBrowserPanel);
+                    }
+                    if (catBtn) {
+                        catBtn.classList.toggle("active", currentBrowserPanel === "categories" || currentCategory !== "");
+                    }
+                    if (tagBrowserBtn) {
+                        tagBrowserBtn.classList.toggle("active", currentBrowserPanel === "tags" || currentTag !== "all");
+                    }
+                }
             }
 
             function renderActiveFilters() {
@@ -114,19 +161,50 @@ const stats = getSiteStats();
                 currentTag = "all";
                 currentCategory = "";
                 currentKeyword = "";
-                searchInput.value = "";
-                history.replaceState("", document.title, "/blog/");
+                currentBrowserPanel = "";
+                if (searchInput) searchInput.value = "";
+                quickBrowser.hidden = true;
+                syncFiltersToUrl();
                 applyFilters();
             }
 
-            searchInput.addEventListener("input", (event) => {
+            // Intercept clicks on category and tags inside cards to filter instead of navigating
+            cards.forEach((card) => {
+                const catSpan = card.querySelector(".post-card-category");
+                if (catSpan) {
+                    catSpan.addEventListener("click", (event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        currentCategory = card.dataset.category;
+                        syncFiltersToUrl();
+                        applyFilters();
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                    });
+                }
+
+                const tagSpans = card.querySelectorAll(".post-tag");
+                tagSpans.forEach((tagSpan) => {
+                    tagSpan.addEventListener("click", (event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        currentTag = tagSpan.textContent.trim();
+                        syncFiltersToUrl();
+                        applyFilters();
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                    });
+                });
+            });
+
+            searchInput?.addEventListener("input", (event) => {
                 currentKeyword = event.target.value.trim().toLowerCase();
+                syncFiltersToUrl();
                 applyFilters();
             });
 
             tagButtons.forEach((button) => {
                 button.addEventListener("click", () => {
                     currentTag = button.dataset.tag;
+                    syncFiltersToUrl();
                     applyFilters();
                 });
             });
@@ -134,26 +212,42 @@ const stats = getSiteStats();
             document.querySelectorAll("[data-category]").forEach((button) => {
                 button.addEventListener("click", () => {
                     currentCategory = button.dataset.category;
+                    currentBrowserPanel = "";
                     quickBrowser.hidden = true;
+                    syncFiltersToUrl();
                     applyFilters();
+                    window.scrollTo({ top: 0, behavior: "smooth" });
                 });
             });
 
             document.querySelectorAll("[data-tag-browser]").forEach((button) => {
                 button.addEventListener("click", () => {
                     currentTag = button.dataset.tagBrowser;
+                    currentBrowserPanel = "";
                     quickBrowser.hidden = true;
+                    syncFiltersToUrl();
                     applyFilters();
+                    window.scrollTo({ top: 0, behavior: "smooth" });
                 });
             });
 
             document.querySelectorAll("[data-browser-action]").forEach((button) => {
                 button.addEventListener("click", () => {
                     const panel = button.dataset.browserAction;
-                    const section = quickBrowser.querySelector(`[data-panel="${panel}"]`);
-                    quickBrowser.querySelectorAll("[data-panel]").forEach((item) => item.hidden = item !== section);
-                    quickBrowser.hidden = !quickBrowser.hidden && !section.hidden ? true : false;
-                    if (!quickBrowser.hidden) section.hidden = false;
+                    
+                    if (panel === "categories" || panel === "tags") {
+                        if (currentBrowserPanel === panel) {
+                            currentBrowserPanel = "";
+                            quickBrowser.hidden = true;
+                        } else {
+                            currentBrowserPanel = panel;
+                            quickBrowser.hidden = false;
+                            const section = quickBrowser.querySelector(`[data-panel="${panel}"]`);
+                            quickBrowser.querySelectorAll("[data-panel]").forEach((item) => item.hidden = item !== section);
+                            if (section) section.hidden = false;
+                        }
+                    }
+                    updateHighlights();
                 });
             });
 
