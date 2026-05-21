@@ -16,6 +16,14 @@ test("Astro build pipeline is configured for Cloudflare Pages static output", ()
     assert.match(wranglerConfig, /pages_build_output_dir\s*=\s*"\.\/dist"/);
 });
 
+test("Cloudflare Pages config binds the article view counter KV namespace", () => {
+    const wranglerConfig = fs.readFileSync(path.join(root, "wrangler.toml"), "utf8");
+
+    assert.match(wranglerConfig, /\[\[kv_namespaces\]\]/);
+    assert.match(wranglerConfig, /binding\s*=\s*"VIEWS"/);
+    assert.match(wranglerConfig, /id\s*=\s*"ccb12d5520ac4a55bde8f3d83bfa8907"/);
+});
+
 test("Astro generates static article pages with SEO data and the view counter hook", () => {
     const articlePage = fs.readFileSync(path.join(root, "src", "pages", "blog", "[id].astro"), "utf8");
 

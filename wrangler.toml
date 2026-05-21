@@ -1,3 +1,7 @@
 name = "syjia"
 compatibility_date = "2025-01-01"
 pages_build_output_dir = "./dist"
+
+[[kv_namespaces]]
+binding = "VIEWS"
+id = "ccb12d5520ac4a55bde8f3d83bfa8907"
